@@ -40,7 +40,10 @@ export default defineConfig({
         {
           text: "Web-Api",
           // collapsed: true,
-          items: [{ text: "ResizeObserver", link: "/Web-Api/ResizeObserver" }],
+          items: [
+            { text: "ResizeObserver", link: "/Web-Api/ResizeObserver" },
+            { text: "XMLHttpRequest", link: "/Web-Api/XMLHttpRequest" },
+          ],
         },
       ],
     },
