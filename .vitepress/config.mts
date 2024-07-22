@@ -43,13 +43,12 @@ export default defineConfig({
           items: [
             { text: "ResizeObserver", link: "/Web-Api/ResizeObserver" },
             { text: "XMLHttpRequest", link: "/Web-Api/XMLHttpRequest" },
+            { text: "Web Storage API", link: "/Web-Api/StorageAPI" },
           ],
         },
       ],
     },
 
-    socialLinks: [
-      { icon: "github", link: "https://github.com/vuejs/vitepress" },
-    ],
+    socialLinks: [{ icon: "github", link: "https://github.com/dddssw" }],
   },
 });
