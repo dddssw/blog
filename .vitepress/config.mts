@@ -5,6 +5,9 @@ export default defineConfig({
   title: "dddssw'blog",
   description: "A VitePress Site",
   lastUpdated: true,
+  markdown: {
+    lineNumbers: true,
+  },
   base: "/blog/",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
@@ -62,6 +65,7 @@ export default defineConfig({
             { text: "高亮API", link: "/Web-Api/Highlight" },
             { text: "同源通信", link: "/Web-Api/sameOrigin" },
             { text: "CSS 对象模型（CSSOM）", link: "/Web-Api/cssom" },
+            { text: "File API", link: "/Web-Api/file" },
           ],
         },
       ],
