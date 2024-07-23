@@ -66,6 +66,7 @@ export default defineConfig({
             { text: "同源通信", link: "/Web-Api/sameOrigin" },
             { text: "CSS 对象模型（CSSOM）", link: "/Web-Api/cssom" },
             { text: "File API", link: "/Web-Api/file" },
+            { text: "Canvas", link: "/Web-Api/canvas" },
           ],
         },
       ],
