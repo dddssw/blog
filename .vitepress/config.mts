@@ -12,8 +12,16 @@ export default defineConfig({
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     logo: "/images.jfif",
+    // search: {
+    //   provider: "local",
+    // },
     search: {
-      provider: "local",
+      provider: "algolia",
+      options: {
+        appId: "R2IYF7ETH7",
+        apiKey: "599cec31baffa4868cae4e79f180729b",
+        indexName: "docsearch",
+      },
     },
     nav: [
       { text: "Home", link: "/" },
@@ -67,6 +75,7 @@ export default defineConfig({
             { text: "CSS 对象模型（CSSOM）", link: "/Web-Api/cssom" },
             { text: "File API", link: "/Web-Api/file" },
             { text: "Canvas", link: "/Web-Api/canvas" },
+            { text: "拖拽API", link: "/Web-Api/dragAnddrop" },
           ],
         },
       ],
