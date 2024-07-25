@@ -18,9 +18,9 @@ export default defineConfig({
     search: {
       provider: "algolia",
       options: {
-        appId: "R2IYF7ETH7",
-        apiKey: "599cec31baffa4868cae4e79f180729b",
-        indexName: "docsearch",
+        appId: "SFY0AY60MT",
+        apiKey: "4c70609587914b9a41186e78d4660299",
+        indexName: "dddsswio",
       },
     },
     nav: [
@@ -76,6 +76,11 @@ export default defineConfig({
             { text: "File API", link: "/Web-Api/file" },
             { text: "Canvas", link: "/Web-Api/canvas" },
             { text: "拖拽API", link: "/Web-Api/dragAnddrop" },
+            { text: "History API", link: "/Web-Api/history" },
+            {
+              text: "Intersection Observer API",
+              link: "/Web-Api/intersection",
+            },
           ],
         },
       ],
