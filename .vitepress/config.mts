@@ -34,6 +34,7 @@ export default defineConfig({
         ],
       },
       { text: "Web-Api", link: "/Web-Api/ResizeObserver" },
+      { text: "pnpm", link: "/pnpm/overview" },
     ],
 
     sidebar: {
@@ -82,6 +83,12 @@ export default defineConfig({
               link: "/Web-Api/intersection",
             },
           ],
+        },
+      ],
+      "/pnpm/": [
+        {
+          text: "pnpm",
+          items: [{ text: "概述", link: "/pnpm/overview" },],
         },
       ],
     },

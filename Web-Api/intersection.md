@@ -29,3 +29,6 @@ threshold
 :::tip
 Intersection Observer API 考虑的所有区域都是矩形；形状不规则的元素被视为占据包含元素所有部分的最小矩形。同样，如果元素的可见部分不是矩形，则元素的相交矩形被视为包含元素所有可见部分的最小矩形。
 :::
+参考：
+
+<a href="https://www.ruanyifeng.com/blog/2016/11/intersectionobserver_api.html" target="_blank" rel="noreferrer">csdn</a>  
