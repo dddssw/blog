@@ -25,7 +25,6 @@ export default defineConfig({
     },
     nav: [
       { text: "Home", link: "/" },
-      { text: "Examples", link: "/markdown-examples" },
       {
         text: "Javascript",
         items: [
@@ -38,15 +37,6 @@ export default defineConfig({
     ],
 
     sidebar: {
-      "/Examples/": [
-        {
-          text: "Examples",
-          items: [
-            { text: "Markdown Examples", link: "/markdown-examples" },
-            { text: "Runtime API Examples", link: "/api-examples" },
-          ],
-        },
-      ],
       "/javascript/application/": [
         {
           text: "应用",

@@ -1,6 +1,6 @@
 <template>
     <div class="string" ref="stringRef">
-        <svg style="width: 100%;height: 300;">
+        <svg style="height: 300;" class="lineSvg">
             <path :d="generatePath()" stroke="black" fill="transparent" />
         </svg>
     </div>
@@ -11,9 +11,11 @@ import gsap from 'gsap'
 const width = ref(0)
 const stringRef = ref(null)
 onMounted(()=>{
+    document.querySelector('.lineSvg').setAttribute('width', window.getComputedStyle(stringRef.value).width)  
+    console.log(window.getComputedStyle(stringRef.value).width)
     const mainRef = document.querySelector('.main');
     const rect = mainRef.getBoundingClientRect();
-     width.value = rect.width;
+     width.value = window.getComputedStyle(stringRef.value).width.slice(0,-2);
 
      stringRef.value.addEventListener('mousemove', onMouseMove)
      stringRef.value.addEventListener('mouseleave', onMouseLeave)
