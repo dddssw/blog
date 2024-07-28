@@ -7,7 +7,7 @@ hero:
   text: "Keeping search"
   tagline: Powered by Vitepress，Vue，Gsap，Canvas,Integrating Algolia, and so on ...
   image:
-    src: public/images.jfif
+    src: images.jfif
     alt: VitePress
 ---
 
