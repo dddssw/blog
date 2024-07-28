@@ -7,7 +7,7 @@
 </template>
 <script setup lang="ts">
 import { onMounted,ref} from "vue";
-import gsap from 'gsap'
+import {gsap} from 'gsap'
 const width = ref(0)
 const stringRef = ref(null)
 onMounted(()=>{

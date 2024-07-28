@@ -13,6 +13,7 @@ hero:
 
 <types></types>
 <swipLine></swipLine>
+
 <div style="padding:0 160px" class="wrapper1">
 <div class="item" ref="list" :data-index="index" v-for="({text,bgcolor},index) in data" :style="{backgroundColor:bgcolor}" @click="open(index)">{{text}}<span ref="fill" :style="{ border: `2px solid ${bgcolor}` }"class="fill" ></span></div>
 <div class="place"></div>
@@ -60,12 +61,13 @@ hero:
 
 </style>
 <script setup>
-import gsap from 'gsap'
-import { Flip } from "gsap/Flip";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import {gsap} from 'gsap'
+import  Flip from "gsap/dist/Flip";
+import  ScrollTrigger from "gsap/dist/ScrollTrigger";
 import swipLine from './components/swipLine.vue'
 import types from './components/types.vue'
 import {onMounted,ref} from 'vue'
+
 gsap.registerPlugin(Flip);
 gsap.registerPlugin(ScrollTrigger) 
 

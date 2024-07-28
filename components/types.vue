@@ -2,8 +2,8 @@
 <h6 class="typing" ref="typrRef">持续构建和迁移中......</h6>
 </template>
 <script setup>
-import { gsap } from "gsap";
-import { TextPlugin } from "gsap/TextPlugin";
+import  {gsap}  from "gsap";
+import  TextPlugin  from "gsap/dist/TextPlugin";
 import {ref,onMounted} from 'vue'
 gsap.registerPlugin(TextPlugin);
 const typrRef=ref(null)
