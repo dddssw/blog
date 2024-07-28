@@ -11,11 +11,12 @@ import {gsap} from 'gsap'
 const width = ref(0)
 const stringRef = ref(null)
 onMounted(()=>{
-    document.querySelector('.lineSvg').setAttribute('width', window.getComputedStyle(stringRef.value).width)  
-    console.log(window.getComputedStyle(stringRef.value).width)
+    const innerWidth = (window.innerWidth-128) * 0.7
+    console.log(innerWidth)
+    document.querySelector('.lineSvg').setAttribute('width', innerWidth+'px')  
     const mainRef = document.querySelector('.main');
     const rect = mainRef.getBoundingClientRect();
-     width.value = window.getComputedStyle(stringRef.value).width.slice(0,-2);
+    width.value = innerWidth
 
      stringRef.value.addEventListener('mousemove', onMouseMove)
      stringRef.value.addEventListener('mouseleave', onMouseLeave)
