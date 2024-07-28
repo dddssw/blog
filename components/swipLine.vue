@@ -9,13 +9,12 @@
 import { onMounted,ref} from "vue";
 import {gsap} from 'gsap'
 const width = ref(0)
-const stringRef = ref(null)
+const stringRef = ref<HTMLDivElement|null>(null)
 onMounted(()=>{
+    if (!stringRef.value) return
     const innerWidth = (window.innerWidth-128) * 0.7
     console.log(innerWidth)
-    document.querySelector('.lineSvg').setAttribute('width', innerWidth+'px')  
-    const mainRef = document.querySelector('.main');
-    const rect = mainRef.getBoundingClientRect();
+    document.querySelector('.lineSvg')!.setAttribute('width', innerWidth+'px')  
     width.value = innerWidth
 
      stringRef.value.addEventListener('mousemove', onMouseMove)
