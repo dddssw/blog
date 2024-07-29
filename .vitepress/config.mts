@@ -9,6 +9,11 @@ export default defineConfig({
     lineNumbers: true,
   },
   base: "/blog/",
+  vite: {
+    ssr: {
+      noExternal: ["gsap"],
+    },
+  },
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     logo: "/images.jfif",
@@ -34,6 +39,7 @@ export default defineConfig({
       },
       { text: "Web-Api", link: "/Web-Api/ResizeObserver" },
       { text: "pnpm", link: "/pnpm/overview" },
+      { text: "浏览器", link: "/brower/overview" },
     ],
 
     sidebar: {
@@ -78,7 +84,13 @@ export default defineConfig({
       "/pnpm/": [
         {
           text: "pnpm",
-          items: [{ text: "概述", link: "/pnpm/overview" },],
+          items: [{ text: "概述", link: "/pnpm/overview" }],
+        },
+      ],
+      "/brower/": [
+        {
+          text: "浏览器",
+          items: [{ text: "深入了解现代网络浏览器", link: "/brower/overview" }],
         },
       ],
     },
