@@ -94,7 +94,10 @@ export default defineConfig({
       "/brower/": [
         {
           text: "浏览器",
-          items: [{ text: "深入了解现代网络浏览器", link: "/brower/overview" }],
+          items: [
+            { text: "深入了解现代网络浏览器", link: "/brower/overview" },
+            { text: "性能指标", link: "/brower/performanceTags" },
+          ],
         },
       ],
       "/optimization/": [
