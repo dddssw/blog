@@ -40,6 +40,7 @@ export default defineConfig({
       { text: "Web-Api", link: "/Web-Api/ResizeObserver" },
       { text: "pnpm", link: "/pnpm/overview" },
       { text: "浏览器", link: "/brower/overview" },
+      { text: "性能优化", link: "/optimization/image" },
     ],
 
     sidebar: {
@@ -94,6 +95,12 @@ export default defineConfig({
         {
           text: "浏览器",
           items: [{ text: "深入了解现代网络浏览器", link: "/brower/overview" }],
+        },
+      ],
+      "/optimization/": [
+        {
+          text: "性能优化",
+          items: [{ text: "优化图片", link: "/optimization/image" }],
         },
       ],
     },
