@@ -33,7 +33,7 @@ export default defineConfig({
       {
         text: "Javascript",
         items: [
-          { text: "语法", link: "/item-1" },
+          { text: "语法", link: "/javascript/grammar/module" },
           { text: "应用", link: "/javascript/application/firstFrame" },
         ],
       },
@@ -84,7 +84,10 @@ export default defineConfig({
       "/pnpm/": [
         {
           text: "pnpm",
-          items: [{ text: "概述", link: "/pnpm/overview" }],
+          items: [
+            { text: "概述", link: "/pnpm/overview" },
+            { text: "创建包", link: "/pnpm/createPackage" },
+          ],
         },
       ],
       "/brower/": [
