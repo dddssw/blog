@@ -63,6 +63,3 @@ async function saveSettings () {
 }
 ```
 
-:::tip
-另外关于这部分需要结合具体的打包工具进行配置
-:::

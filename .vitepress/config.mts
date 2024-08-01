@@ -33,8 +33,8 @@ export default defineConfig({
       {
         text: "Javascript",
         items: [
-          { text: "语法", link: "/javascript/grammar/module" },
-          { text: "应用", link: "/javascript/application/firstFrame" },
+          { text: "grammar", link: "/javascript/grammar/introduction" },
+          { text: "application", link: "/javascript/application/firstFrame" },
         ],
       },
       { text: "Web-Api", link: "/Web-Api/ResizeObserver" },
@@ -46,7 +46,7 @@ export default defineConfig({
     sidebar: {
       "/javascript/application/": [
         {
-          text: "应用",
+          text: "application",
           items: [
             {
               text: "获取视频第一(n)帧",
@@ -56,6 +56,25 @@ export default defineConfig({
             {
               text: "富文本提取纯文字",
               link: "/javascript/application/extractText",
+            },
+          ],
+        },
+      ],
+      "/javascript/grammar/": [
+        {
+          text: "grammar",
+          items: [
+            {
+              text: "introduction",
+              link: "/javascript/grammar/introduction",
+            },
+            {
+              text: "basic grammar",
+              link: "/javascript/grammar/basic",
+            },
+            {
+              text: "module",
+              link: "/javascript/grammar/module",
             },
           ],
         },
