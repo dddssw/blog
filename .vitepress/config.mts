@@ -73,6 +73,10 @@ export default defineConfig({
               link: "/javascript/grammar/basic",
             },
             {
+              text: "object",
+              link: "/javascript/grammar/object",
+            },
+            {
               text: "module",
               link: "/javascript/grammar/module",
             },

@@ -63,6 +63,7 @@ js有八种数据类型(Number,Boolean,Null,Undefined,Bigint,Symbol,String,Objec
 
 在 JavaScript 中没有这种类型。只有一种 string 类型，一个字符串可以包含零个（为空）、一个或多个字符。
 :::
+
 ### typeof
 例外 :warning::  
 
@@ -167,7 +168,97 @@ alert( undefined > 0 ); // false (1) NaN 是一个特殊的数值型值，它与
 alert( undefined < 0 ); // false (2)
 alert( undefined == 0 ); // false (3)
 ```
+## 循环
+### switch
+```js
+let a = 3;
 
+switch (a) {
+  case 4:
+    alert('Right!');
+    break;
+
+  case 3: // (*) 下面这两个 case 被分在一组
+  case 5:
+    alert('Wrong!');
+    alert("Why don't you take a math class?");
+    break;
+
+  default:
+    alert('The result is strange. Really.');
+}
+```
+:::warning :warning:
+强调一下，这里的相等是严格相等。被比较的值必须是相同的类型才能进行匹配。
+:::
+### break continue return
+* break - 跳出整个循环
+* continue - 跳出本次循环
+* return - 退出函数
+
+:::warning :warning:
+我这里有个常犯的错误，在for循环里使用return退出，这是不正确的。
+:::
+
+:::tip :rocket: continue 指令利于减少嵌套
+我这里有个常犯的错误，在for循环里使用return退出，这是不正确的。
+```js
+for (let i = 0; i < 10; i++) {
+
+  if (i % 2) {
+    alert( i );
+  }
+
+}
+```
+***
+
+```js
+for (let i = 0; i < 10; i++) {
+
+  //如果为真，跳过循环体的剩余部分。
+  if (i % 2 == 0) continue;
+
+  alert(i); // 1，然后 3，5，7，9
+}
+```
+:::
+
+:::warning :warning: 禁止 break/continue 在 ‘?’ 的右边
+```js
+(i > 5) ? alert(i) : continue; // continue 不允许在这个位置
+```
+这是不（建议）使用问号 ? 运算符替代 if 语句的另一个原因。
+:::
+
+### break/continue 标签
+有时候我们需要一次从多层嵌套的循环中跳出来。
+
+标签 是在循环之前带有冒号的标识符：
+
+```js
+labelName: for (...) {
+  ...
+}
+```
+break `<labelName>` 语句跳出循环至标签处：
+
+```js
+outer: for (let i = 0; i < 3; i++) {
+
+  for (let j = 0; j < 3; j++) {
+
+    let input = prompt(`Value at coords (${i},${j})`, '');
+
+    // 如果是空字符串或被取消，则中断并跳出这两个循环。
+    if (!input) break outer; // (*)
+
+    // 用得到的值做些事……
+  }
+}
+
+alert('Done!');
+```
 ## 函数
 在函数中声明的变量只在该函数内部可见, 函数对外部变量拥有全部的访问权限。函数也可以修改外部变量。只有在没有局部变量的情况下才会使用外部变量。
 
@@ -216,6 +307,8 @@ return (
   )
 ```
 :::
+
+
 ### 函数命名
 :thinking: 一个函数 —— 一个行为
 
