@@ -77,6 +77,10 @@ export default defineConfig({
               link: "/javascript/grammar/object",
             },
             {
+              text: "Data Type Detailed Description",
+              link: "/javascript/grammar/DescriptionOfDataType",
+            },
+            {
               text: "module",
               link: "/javascript/grammar/module",
             },
@@ -120,6 +124,7 @@ export default defineConfig({
           items: [
             { text: "深入了解现代网络浏览器", link: "/brower/overview" },
             { text: "性能指标", link: "/brower/performanceTags" },
+            { text: "渐进式渲染", link: "/brower/progressiveRendering" },
           ],
         },
       ],

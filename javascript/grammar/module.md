@@ -197,6 +197,9 @@ export {default as User} from './user.js'; // 重新导出 default
 
 这是因为 import/export 旨在提供代码结构的主干。这是非常好的事儿，因为这样便于分析代码结构，可以收集模块，可以使用特殊工具将收集的模块打包到一个文件中，可以删除未使用的导出（“tree-shaken”）。这些只有在 import/export 结构简单且固定的情况下才能够实现。
 
+::: :rocket:
+打包工具通过它进行代码分割
+:::
 ### import() 表达式
 import(module) 表达式加载模块并返回一个 promise，该 promise resolve 为一个包含其所有导出的模块对象。我们可以在代码中的任意位置调用这个表达式。
 
