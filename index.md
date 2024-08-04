@@ -19,6 +19,16 @@ hero:
 <div class="place"></div>
 </div>
 
+
+<div class="container1">
+    </div>
+<video class="video" muted src="/bbb.mp4" preload="auto"></video>
+
+
+
+
+
+
 <style scoped>
   .wrapper1{
   display:grid;
@@ -57,7 +67,22 @@ hero:
   height:100%;
   border-radius:50%;
 }
-
+.container1{
+  width:100%;
+  height:800vh
+}
+.video{
+  z-index:-1;
+  opacity:0.8;
+  width:100%;
+  /* height:100vh; */
+   position: fixed;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  transform: translate(-50%, -50%);
+}
 
 </style>
 <script setup>
@@ -137,7 +162,9 @@ Flip.from(state, {
 onMounted(()=>{
 place = document.querySelector('.place')
 gsap.from('.item',{
-   scrollTrigger: '.wrapper1',
+   scrollTrigger: {
+    trigger: '.wrapper1',
+   },
   opacity:0,
   rotate:360,
   scale: 0.1,
@@ -180,5 +207,41 @@ borderRadius:50,
     });
   });
 });
+
+const video = document.querySelector('.video')
+
+ video.addEventListener("loadedmetadata", () => {
+
+   gsap.to(
+      '.video',
+      {
+        currentTime:video.duration,
+         scrollTrigger: {
+      trigger: ".container1",
+      start: "top top",
+      end: "bottom bottom",
+      scrub: true,
+
+     // markers: true,
+        onUpdate: (self) => {
+          console.log(
+              'progress:',
+              self.progress.toFixed(3),
+              'direction:',
+              self.direction,
+              'velocity',
+              self.getVelocity()
+          );
+      }
+    }
+      }
+    );
+
+ })
+
 })
+
+
+
+
 </script>
