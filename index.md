@@ -6,12 +6,12 @@ hero:
   name: "dddssw'blog"
   text: "Keeping search"
   tagline: Powered by Vitepress，Vue，Gsap，Canvas,Integrating Algolia, and so on ...
-  image:
-    src: images.jfif
-    alt: VitePress
+  # image:
+  #   src: images.jfif
+  #   alt: VitePress
 ---
 
-<types></types>
+<types style="color:#fff;z-index:10"></types>
 <swipLine style="z-index:10"></swipLine>
 
 <div style="padding:0 160px" class="wrapper1">

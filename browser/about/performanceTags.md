@@ -9,6 +9,24 @@ LCP 会报告视口中可见的最大图片或文本块的呈现时间
 
 对于视频会判断封面时间和第一帧呈现时间中较短的为准
 
+## 优化LCP
+### 延迟加载图像
+对于延迟加载图片的情况，推迟加载初始视口之外的图片有助于减少初始视口内更关键资源的带宽争用。这可以在网络连接较差的情况下改善页面的最大内容绘制 (LCP)，并且重新分配的带宽可以帮助LCP 候选更快地加载和绘制。
+
+但是不要延迟加载初始视口中的图像
+
+可以将属性添加到元素中loading以`<img>`告诉浏览器如何加载它们：
+
+* "eager"通知浏览器应立即加载图像，即使该图像位于初始视口之外。这也是该loading属性的默认值。
+* "lazy"延迟加载图像，直到它与可见视口之间的距离达到设定值。此距离因浏览器而异，但通常设置为足够大，以便用户滚动到该图像时图像可以加载。
+### 使用较高的获取优先级预加载 LCP 资源
+```js
+// <!-- Load the stylesheet that will reference the LCP image. -->
+<link rel="stylesheet" href="/path/to/styles.css">
+
+{/* <!-- Preload the LCP image with a high fetchpriority so it starts loading with the stylesheet. --> */}
+<link rel="preload" fetchpriority="high" as="image" href="/path/to/hero-image.webp" type="image/webp">
+```
 ## CLS(Cumulative Layout Shift)
 衡量页面整个生命周期中不符合预期的布局偏移
 
@@ -157,6 +175,16 @@ Dynamicimport()在改进INP方面有两个优势：
 1. 推迟加载的模块通过减少当时加载的 JavaScript 数量来减少启动期间的主线程争用。这释放了主线程，使其能够更快地响应用户交互。
 2. 当进行动态import()调用时，每次调用都会有效地将每个模块的编译和评估分离到其自己的任务中。当然，import()加载非常大模块的动态将启动相当大的脚本评估任务，如果交互与动态调用同时发生，这可能会干扰主线程响应用户输入的能力import()。因此，尽可能少地加载 JavaScript 仍然非常重要。
 
+代码分割是一种有用的技术，可以减少页面的初始 JavaScript 负载。它允许您将 JavaScript 包拆分为两部分：
+
+* 页面加载时需要 JavaScript，因此无法在任何其他时间加载。
+* 剩余的 JavaScript 可以在稍后的某个时间点加载，通常是在用户与页面上给定的交互元素交互时加载。  
+
+代码拆分可以通过使用动态import()语法来完成。此语法与`<script>`在启动期间请求给定 JavaScript 资源的元素不同，它会在页面生命周期的稍后时间点请求 JavaScript 资源。
+
+webpack附带了一个名为 的插件SplitChunksPlugin，它允许您配置打包器如何拆分 JavaScript 文件。  
+[参考](https://segmentfault.com/a/1190000042093955#item-2-2)
+
 #### 压缩效率
 压缩是拆分脚本时需要考虑的一个因素。脚本越小，压缩的效率就越低。脚本越大，压缩的效果就越好。虽然提高压缩效率有助于尽可能缩短脚本的加载时间，但确保将脚本拆分成足够小的块，以便在启动时实现更好的交互性，这需要一定的平衡。
 #### 缓存失效
@@ -166,3 +194,102 @@ Dynamicimport()在改进INP方面有两个优势：
 :::tip 关键点：
 为了使缓存高效并且避免从缓存中提供过时的资源，请确保捆绑程序生成的资源的文件名中带有哈希值。
 :::
+
+
+## 通过资源提示协助浏览器
+
+### preload:
+
+帮助浏览器更快地发现资源，尽快下载
+
+还可以通过 as 指定资源类型
+
+* style 样式表
+* font：字体文件
+* image：图片文件
+* audio：音频文件
+* video：视频文件
+* document：文档
+
+preload指令应仅限于后期发现的关键资源。最常见的用例是字体文件、通过@import 声明获取的 CSS 文件或background-image可能是最大内容绘制 (LCP) 候选的CSS 资源。在这种情况下，这些文件不会被预加载扫描器发现，因为资源在外部资源中被引用。
+
+```js
+<link rel="preload" as="font" href="/fonts/OpenSans-Regular-webfont.woff2" crossorigin>
+```
+:::tip :rocket:注意
+与 preconnect 类似，如果您要预加载 CORS 资源（例如字体），则该preload指令需要该crossorigin 属性。如果您不添加该crossorigin属性（或为非 CORS 请求添加该属性），则浏览器会下载该资源两次，从而浪费带宽，而这些带宽本可以更好地用于其他资源。
+:::
+### 使用 webpack 预加载 JavaScript 模块
+如果您使用的模块打包器会创建应用的 build 文件，则需要检查它是否支持注入预加载标记。在 webpack 4.6.0 或更高版本中，可通过在 import() 中使用魔法注释来支持预加载：
+
+```js
+import(_/* webpackPreload: true */_ "CriticalChunk")
+```
+### preconnect:
+
+您可以告诉浏览器比平常更快地打开跨域连接
+```js
+<link rel="preconnect" href="https://fonts.googleapis.com">  
+```
+### dns-prefetch:
+虽然尽早打开与跨源服务器的连接可以显著缩短初始页面加载时间，但同时与许多跨源服务器建立连接可能不合理或不可能。如果您担心可能会过度使用preconnect，那么成本低得多的资源提示就是 dns-prefetch提示。
+
+顾名思义，它dns-prefetch不会与跨源服务器建立连接，而是提前执行DNS 查找。当域名解析为其底层 IP 地址时，就会发生DNS 查找。虽然设备和网络级别的 DNS 缓存层有助于使这一过程通常很快，但仍需要一些时间。
+### prefetch:
+
+加载未来（比如下一个页面）会用到的资源，并且告诉浏览器在空闲的时候去下载，它会将下载资源的优先级降到最低
+
+类似的还有一个`prerender`
+
+除了预取资源外，还可以提示浏览器在用户导航到页面之前预渲染页面。这可以实现几乎即时的页面加载，因为页面及其资源是在后台获取和处理的。一旦用户导航到该页面，该页面就会被置于前台。
+
+```js
+<script type="speculationrules">
+{
+  "prerender": [
+    {
+      "source": "list",
+      "urls": ["/page-a", "page-b"]
+    }
+  ]
+}
+</script>
+```
+
+### 使用 webpack 魔法注释预提取 JavaScript 模块
+webpack 可用于预提取用户肯定会很快访问或使用的路线或功能对应的脚本。
+
+以下代码段会延迟加载 lodash 库中的排序功能，从而对将通过表单提交的一组数字进行排序：
+
+```js
+form.addEventListener("submit", e => {
+  e.preventDefault()
+  import('lodash.sortby')
+    .then(module => module.default)
+    .then(sortInput())
+    .catch(err => { alert(err) });
+});
+```
+您可以不等待“submit”事件发生来加载此功能，而是可以预取该资源，以提高在用户提交表单时它出现在缓存中的几率。webpack 允许使用 import() 内的魔法注释：
+
+```js
+form.addEventListener("submit", e => {
+   e.preventDefault()
+   import(/* webpackPrefetch: true */ 'lodash.sortby')
+         .then(module => module.default)
+         .then(sortInput())
+         .catch(err => { alert(err) });
+});
+```
+这会告知 webpack 将 <link rel="prefetch"> 标记注入 HTML 文档中：
+
+```js
+<link rel="prefetch" as="script" href="1.bundle.js">
+```
+### fetchpriority
+:::tip :rocket: 重要提示： 
+此fetchpriority属性 在用于页面的 LCP 图像时特别有效。通过使用此属性提高 LCP 图像的优先级，您可以相对轻松地改善页面的 LCP。
+:::
+
+默认情况下，图片的获取优先级较低。布局后，如果发现图片位于初始视口内，则优先级将提高为 高优先级。在上述 HTML 代码段中，立即告诉浏览器以高fetchpriority优先级下载较大的 LCP 图片，而以较低的优先级下载不太重要的缩略图。
+

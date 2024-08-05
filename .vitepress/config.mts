@@ -39,7 +39,13 @@ export default defineConfig({
       },
       { text: "Web-Api", link: "/Web-Api/ResizeObserver" },
       { text: "pnpm", link: "/pnpm/overview" },
-      { text: "浏览器", link: "/brower/overview" },
+      {
+        text: "browser",
+        items: [
+          { text: "about", link: "/browser/about/overview" },
+          { text: "dev-tool", link: "/browser/devtool/source" },
+        ],
+      },
       { text: "性能优化", link: "/optimization/image" },
     ],
 
@@ -106,6 +112,10 @@ export default defineConfig({
               text: "Intersection Observer API",
               link: "/Web-Api/intersection",
             },
+            {
+              text: "web work",
+              link: "/Web-Api/webWork",
+            },
           ],
         },
       ],
@@ -118,13 +128,28 @@ export default defineConfig({
           ],
         },
       ],
-      "/brower/": [
+      "/browser/about/": [
         {
-          text: "浏览器",
+          text: "about",
           items: [
-            { text: "深入了解现代网络浏览器", link: "/brower/overview" },
-            { text: "性能指标", link: "/brower/performanceTags" },
-            { text: "渐进式渲染", link: "/brower/progressiveRendering" },
+            { text: "深入了解现代网络浏览器", link: "/browser/about/overview" },
+            { text: "性能指标", link: "/browser/about/performanceTags" },
+            { text: "渐进式渲染", link: "/browser/about/progressiveRendering" },
+          ],
+        },
+      ],
+      "/browser/devtool/": [
+        {
+          text: "devtool",
+          items: [
+            {
+              text: "source",
+              link: "/browser/devtool/source",
+            },
+            {
+              text: "network",
+              link: "/browser/devtool/network",
+            },
           ],
         },
       ],
