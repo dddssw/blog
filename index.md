@@ -12,22 +12,16 @@ hero:
 ---
 
 <types></types>
-<swipLine></swipLine>
+<swipLine style="z-index:10"></swipLine>
 
 <div style="padding:0 160px" class="wrapper1">
 <div class="item" ref="list" :data-index="index" v-for="({text,bgcolor},index) in data" :style="{backgroundColor:bgcolor}" @click="open(index)">{{text}}<span ref="fill" :style="{ border: `2px solid ${bgcolor}` }"class="fill" ></span></div>
 <div class="place"></div>
 </div>
-
-
-<div class="container1">
+<scrollBg></scrollBg>
+<!-- <div class="container1">
     </div>
-<video class="video" muted src="/bbb.mp4" preload="auto"></video>
-
-
-
-
-
+<video class="video" muted src="/output.mp4" controls preload></video> -->
 
 <style scoped>
   .wrapper1{
@@ -37,6 +31,8 @@ hero:
   justify-items: center ;
   align-items:  center ;
   position: relative;
+  z-index:999;
+  opacity:0.8
   }
 .item{
   font-size:30px;
@@ -69,11 +65,11 @@ hero:
 }
 .container1{
   width:100%;
-  height:800vh
+  height:1000vh
 }
 .video{
   z-index:-1;
-  opacity:0.8;
+  opacity:0;
   width:100%;
   /* height:100vh; */
    position: fixed;
@@ -82,6 +78,7 @@ hero:
   min-width: 100%;
   min-height: 100%;
   transform: translate(-50%, -50%);
+     transition: opacity 2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 </style>
@@ -91,6 +88,7 @@ import  Flip from "gsap/dist/Flip";
 import  ScrollTrigger from "gsap/dist/ScrollTrigger";
 import swipLine from './components/swipLine.vue'
 import types from './components/types.vue'
+import scrollBg from './components/scrollBg.vue'
 import {onMounted,ref} from 'vue'
 
 gsap.registerPlugin(Flip);
@@ -157,7 +155,10 @@ Flip.from(state, {
 });
  }
 }
-
+ function fadeInImage(img) {
+  consoel.log('sss')
+    img.style.opacity = '0.8';
+  }
 
 onMounted(()=>{
 place = document.querySelector('.place')
@@ -208,39 +209,41 @@ borderRadius:50,
   });
 });
 
-const video = document.querySelector('.video')
+// const video = document.querySelector('.video')
 
- video.addEventListener("loadedmetadata", () => {
+//  video.addEventListener("loadedmetadata", () => {
+//    video.style.opacity = '0.8';
+//    gsap.to(
+//       '.video',
+//       {
+      
+//          scrollTrigger: {
+//       trigger: ".container1",
+//       start: "top top",
+//       end: "bottom bottom",
+//     //  scrub: true,
+//       anticipatePin:1,
+//   onUpdate: (self) => {
+//     window.requestAnimationFrame(()=>{
 
-   gsap.to(
-      '.video',
-      {
-        currentTime:video.duration,
-         scrollTrigger: {
-      trigger: ".container1",
-      start: "top top",
-      end: "bottom bottom",
-      scrub: true,
+//       videoGurrentTime('.video', self.progress.toFixed(3), self.direction)
+//     })
+//   }
+//      // markers: true,
+//     }
+//       }
+//     );
 
-     // markers: true,
-        onUpdate: (self) => {
-          console.log(
-              'progress:',
-              self.progress.toFixed(3),
-              'direction:',
-              self.direction,
-              'velocity',
-              self.getVelocity()
-          );
-      }
-    }
-      }
-    );
-
- })
+//  })
 
 })
 
+function videoGurrentTime(elem, progress) {
+  let videoEl = document.querySelector(elem)
+  let videoTime = 11; //引入视频的时间，此完整视频全长为6s
+  console.log(progress * videoTime)
+  videoEl.currentTime = progress * videoTime
+}
 
 
 
