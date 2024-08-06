@@ -445,10 +445,9 @@ Map 使用 SameValueZero 算法来比较键是否相等。它和严格等于 ===
 :::
 
 ### Map 迭代
-
-- map.keys() —— 遍历并返回一个包含所有键的可迭代对象，
-- map.values() —— 遍历并返回一个包含所有值的可迭代对象，
-- map.entries() —— 遍历并返回一个包含所有实体 [key, value] 的可迭代对象，for..of 在默认情况下使用的就是这个。
+* map.keys() —— 遍历并返回一个包含所有键的`可迭代对象`，
+* map.values() —— 遍历并返回一个包含所有值的`可迭代对象`，
+* map.entries() —— 遍历并返回一个包含所有实体 [key, value] 的可迭代对象，for..of 在默认情况下使用的就是这个。
 
 除此之外，Map 有内建的 forEach 方法
 
@@ -567,9 +566,29 @@ john = null; // 覆盖引用
 ```
 
 :::tip :rocket:
-但是 Map 可以用对象当成键,如果把这个对象变成 null,那岂不是永远都访问不到这个键对应的值,这种情况下这个值不会被垃圾回收,但是 weakMap 会回收
+WeakMap 的键必须是对象，不能是原始值
 
-所以 WeakMap 的键必须是对象，不能是原始值
+类似的，如果我们使用对象作为常规 Map 的键，那么当 Map 存在时，该对象也将存在。它会占用内存，并且不会被（垃圾回收机制）回收。
+```js
+let john = { name: "John" };
+
+let map = new Map();
+map.set(john, "...");
+
+john = null; // 覆盖引用
+
+// john 被存储在了 map 中，
+// 我们可以使用 map.keys() 来获取它
+```
+:::
+
+
+如果我们在 weakMap 中使用一个对象作为键，并且没有其他对这个对象的引用 —— 该对象将会被从内存（和map）中自动清除。
+
+WeakMap 不支持迭代以及 keys()，values() 和 entries() 方法。所以没有办法获取 WeakMap 的所有键或值。
+
+:::tip :rocket:
+vue中使用它作为建立data与副作用的映射
 :::
 
 ## 解构
@@ -770,3 +789,4 @@ alert(item2);  // Donut
 最终，我们得到了 width、height、item1、item2 和具有默认值的 title 变量。
 
 注意，size 和 items 没有对应的变量，因为我们取的是它们的内容。
+
