@@ -150,6 +150,10 @@ export default defineConfig({
               text: "network",
               link: "/browser/devtool/network",
             },
+            {
+              text: "性能监控",
+              link: "/browser/devtool/monitor",
+            },
           ],
         },
       ],
