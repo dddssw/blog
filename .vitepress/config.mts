@@ -98,6 +98,18 @@ export default defineConfig({
               text: "Rest与Spread",
               link: "/javascript/grammar/restSpread",
             },
+            {
+              text: "闭包",
+              link: "/javascript/grammar/closure",
+            },
+            {
+              text: "来自旧时代的var",
+              link: "/javascript/grammar/var",
+            },
+            {
+              text: "杂项",
+              link: "/javascript/grammar/misc",
+            },
           ],
         },
       ],
