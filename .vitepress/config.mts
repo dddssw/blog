@@ -90,6 +90,14 @@ export default defineConfig({
               text: "module",
               link: "/javascript/grammar/module",
             },
+            {
+              text: "递归",
+              link: "/javascript/grammar/recursion",
+            },
+            {
+              text: "Rest与Spread",
+              link: "/javascript/grammar/restSpread",
+            },
           ],
         },
       ],
