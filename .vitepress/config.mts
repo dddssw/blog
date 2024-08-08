@@ -37,6 +37,13 @@ export default defineConfig({
           { text: "application", link: "/javascript/application/firstFrame" },
         ],
       },
+      {
+        text: "框架",
+        items: [
+          { text: "Vue", link: "/frame/vue/start" },
+          { text: "React", link: "/frame/react/start" },
+        ],
+      },
       { text: "Web-Api", link: "/Web-Api/ResizeObserver" },
       { text: "pnpm", link: "/pnpm/overview" },
       {
@@ -101,6 +108,10 @@ export default defineConfig({
             {
               text: "闭包",
               link: "/javascript/grammar/closure",
+            },
+            {
+              text: "装饰器和转发",
+              link: "/javascript/grammar/decorator",
             },
             {
               text: "来自旧时代的var",
