@@ -121,7 +121,21 @@ export default defineConfig({
               text: "杂项",
               link: "/javascript/grammar/misc",
             },
+            {
+              text: "冒泡与捕获",
+              link: "/javascript/grammar/bubbling",
+            },
           ],
+        },
+      ],
+      "/frame/react/": [
+        {
+          text: "开始",
+          link: "/frame/react/start",
+        },
+        {
+          text: "state",
+          link: "/frame/react/state",
         },
       ],
       "/Web-Api/": [

@@ -146,3 +146,22 @@ function Profile() {
 ```
 当子组件需要来自父组件的一些数据时，通过 props 传递它，而不是嵌套定义。
 :::
+
+
+## onClickCapture
+极少数情况下，你可能需要捕获子元素上的所有事件，即便它们阻止了传播。例如，你可能想对每次点击进行埋点记录，传播逻辑暂且不论。那么你可以通过在事件名称末尾添加 Capture 来实现这一点：
+```js
+<div onClickCapture={() => { /* 这会首先执行 */ }}>
+  <button onClick={e => e.stopPropagation()} />
+  <button onClick={e => e.stopPropagation()} />
+</div>
+```
+每个事件分三个阶段传播：
+
+1. 它向下传播，调用所有的 onClickCapture 处理函数。
+2. 它执行被点击元素的 onClick 处理函数。
+3. 它向上传播，调用所有的 onClick 处理函数。
+
+捕获事件对于路由或数据分析之类的代码很有用，但你可能不会在应用程序代码中使用它们。
+
+这就相当监听元素的捕获事件
