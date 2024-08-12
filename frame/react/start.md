@@ -2,19 +2,10 @@
 outline: deep
 layout: doc
 ---
-## react组件
-就是一个返回jsx的函数，在jsx中可以写类似html的东西
-jsx 看起来很像 htmlL，但它更严格一些，并且可以显示动态信息。要求所有标签明确的闭合
-```js
-function MyButton() {
-  return (
-    <button>I'm a button</button>
-  );
-}
-```
-:::warning :warning:
-React 组件名称必须始终以大写字母开头，而 HTML 标签必须小写 
-:::
+## jsx
+* 只能返回一个根节点
+* 标签必须闭合
+* 使用驼峰式命名法给大部分属性命名！除了aria-* 和 data-* 属性是以带 - 符号的 HTML 格式书写的
 
 :::tip DEEP DIVE
 :::details 为什么只能返回一个根节点
@@ -41,7 +32,44 @@ const MyComponent = (props) => {
 ```
 这样是不行的
 :::
-## 展示数据
+## 组件
+就是一个返回jsx的函数，在jsx中可以写类似html的东西
+
+jsx 看起来很像 htmlL，但它更严格一些，并且可以显示动态信息。
+```js
+function MyButton() {
+  return (
+    <button>I'm a button</button>
+  );
+}
+```
+:::warning :warning:
+React 组件名称必须始终以大写字母开头，而 HTML 标签必须小写 
+:::
+
+组件可以渲染其他组件，但是 请不要嵌套他们的定义：
+```js
+export default function Gallery() {
+  // 🔴 永远不要在组件中定义组件
+  function Profile() {
+    // ...
+  }
+  // ...
+}
+```
+上面这段代码 非常慢，并且会导致 bug 产生。因此，你应该在顶层定义每个组件：
+```js
+export default function Gallery() {
+  // ...
+}
+
+// ✅ 在顶层声明组件
+function Profile() {
+  // ...
+}
+```
+当子组件需要使用父组件的数据时，你需要 通过 props 的形式进行传递，而不是嵌套定义。
+## 在 jsx 中通过大括号使用 js
 jsx里面可以放入html，如果需要重新跳回js，可以使用大括号包裹
 ```js{3}
 return (
@@ -73,6 +101,28 @@ return (
 
 * 作为JSX 标签内的文本`<h1>{name}'s To Do List</h1>`：可以，但`<{tag}>Gregorio Y. Zara's To Do List</{tag}>` 不会。
 * 作为紧跟在符号后面的属性=：`src={avatar}`将读取avatar变量，但`src="{avatar}"`会传递字符串"{avatar}"。
+## 使用 jsx 展开语法传递 props 
+```js
+function Profile(props) {
+  return (
+    <div className="card">
+      <Avatar {...props} />
+    </div>
+  );
+}
+```
+## 将 jsx 作为子组件传递(插槽)
+通过解构children
+```js
+function Card({ children }) {
+  return (
+    <div className="card">
+      {children}
+    </div>
+  );
+}
+
+```
 ## 条件渲染
 ```jsx
 <div>
@@ -89,6 +139,44 @@ return (
   {isLoggedIn && <AdminPanel />}
 </div>
 ```
+## 将 jsx 赋值给变量
+```jsx{4-8}
+function Item({ name, isPacked }) {
+  let itemContent = name;
+  if (isPacked) {
+    itemContent = (
+      <del>
+        {name + " ✔"}
+      </del>
+    );
+  }
+  return (
+    <li className="item">
+      {itemContent}
+    </li>
+  );
+}
+```
+## Fragment 
+Fragment 语法的简写形式 <> </> 无法接受 key 值，所以你只能要么把生成的节点用一个 `<div>` 标签包裹起来，要么使用长一点但更明确的 `<Fragment>` 写法：
+```js
+import { Fragment } from 'react';
+
+// ...
+
+const listItems = people.map(person =>
+  <Fragment key={person.id}>
+    <h1>{person.name}</h1>
+    <p>{person.bio}</p>
+  </Fragment>
+);
+```
+这里的 Fragment 标签本身并不会出现在 DOM 上，这串代码最终会转换成 `<h1>、<p>、<h1>、<p>`…… 的列表。
+## 严格模式
+在严格模式下开发时，它将会调用每个组件函数两次
+
+严格模式在生产环境下不生效，因此它不会降低应用程序的速度。如需引入严格模式，你可以用 `<React.StrictMode>` 包裹根组件
+
 ## 响应事件
 onClick={handleClick}末尾没有括号
 ## 简单示例

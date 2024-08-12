@@ -137,6 +137,10 @@ export default defineConfig({
           text: "state",
           link: "/frame/react/state",
         },
+        {
+          text: "状态管理",
+          link: "/frame/react/manage",
+        },
       ],
       "/Web-Api/": [
         {
