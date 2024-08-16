@@ -118,6 +118,10 @@ export default defineConfig({
               link: "/javascript/grammar/var",
             },
             {
+              text: "深入对象属性",
+              link: "/javascript/grammar/deepInObject",
+            },
+            {
               text: "杂项",
               link: "/javascript/grammar/misc",
             },
