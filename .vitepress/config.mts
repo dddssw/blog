@@ -54,6 +54,7 @@ export default defineConfig({
         ],
       },
       { text: "性能优化", link: "/optimization/image" },
+      { text: "Node", link: "/node/initial" },
     ],
 
     sidebar: {
@@ -178,6 +179,14 @@ export default defineConfig({
           items: [
             { text: "概述", link: "/pnpm/overview" },
             { text: "创建包", link: "/pnpm/createPackage" },
+          ],
+        },
+      ],
+      "/node/": [
+        {
+          text: "Node",
+          items: [
+            { text: "概述", link: "/node/initial" },
           ],
         },
       ],
