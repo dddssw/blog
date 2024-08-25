@@ -122,6 +122,10 @@ export default defineConfig({
               link: "/javascript/grammar/deepInObject",
             },
             {
+              text: "错误处理",
+              link: "/javascript/grammar/trycatch",
+            },
+            {
               text: "杂项",
               link: "/javascript/grammar/misc",
             },
