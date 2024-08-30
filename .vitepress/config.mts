@@ -46,6 +46,7 @@ export default defineConfig({
       },
       { text: "Web-Api", link: "/Web-Api/ResizeObserver" },
       { text: "pnpm", link: "/pnpm/overview" },
+      { text: "vscode", link: "/vscode/extension" },
       {
         text: "browser",
         items: [
@@ -183,6 +184,14 @@ export default defineConfig({
           items: [
             { text: "概述", link: "/pnpm/overview" },
             { text: "创建包", link: "/pnpm/createPackage" },
+          ],
+        },
+      ],
+      "/vscode/": [
+        {
+          text: "vscode",
+          items: [
+            { text: "插件", link: "/vscode/extension" },
           ],
         },
       ],
