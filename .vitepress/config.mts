@@ -53,8 +53,9 @@ export default defineConfig({
           { text: "dev-tool", link: "/browser/devtool/source" },
         ],
       },
-      { text: "性能优化", link: "/optimization/image" },
+      // { text: "性能优化", link: "/optimization/image" },
       { text: "Node", link: "/node/initial" },
+      { text: "vscode", link: "/vscode/keybinding" },
     ],
 
     sidebar: {
@@ -151,6 +152,7 @@ export default defineConfig({
           link: "/frame/react/manage",
         },
       ],
+      "/vscode/": [{ text: "快捷键", link: "/vscode/keybinding" }],
       "/Web-Api/": [
         {
           text: "Web-Api",
@@ -189,9 +191,7 @@ export default defineConfig({
       "/node/": [
         {
           text: "Node",
-          items: [
-            { text: "概述", link: "/node/initial" },
-          ],
+          items: [{ text: "概述", link: "/node/initial" }],
         },
       ],
       "/browser/about/": [
