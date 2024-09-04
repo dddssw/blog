@@ -13,6 +13,9 @@ export default defineConfig({
     ssr: {
       noExternal: ["gsap"],
     },
+    optimizeDeps: {
+      entries: [],
+    },
   },
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
@@ -46,6 +49,7 @@ export default defineConfig({
       },
       { text: "Web-Api", link: "/Web-Api/ResizeObserver" },
       { text: "pnpm", link: "/pnpm/overview" },
+      { text: "vscode", link: "/vscode/extension" },
       {
         text: "browser",
         items: [
@@ -56,6 +60,7 @@ export default defineConfig({
       // { text: "性能优化", link: "/optimization/image" },
       { text: "Node", link: "/node/initial" },
       { text: "vscode", link: "/vscode/keybinding" },
+      { text: "Vite", link: "/vite/initial" },
     ],
 
     sidebar: {
@@ -186,6 +191,12 @@ export default defineConfig({
             { text: "概述", link: "/pnpm/overview" },
             { text: "创建包", link: "/pnpm/createPackage" },
           ],
+        },
+      ],
+      "/vscode/": [
+        {
+          text: "vscode",
+          items: [{ text: "插件", link: "/vscode/extension" }],
         },
       ],
       "/node/": [
