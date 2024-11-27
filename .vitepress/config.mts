@@ -8,6 +8,36 @@ export default defineConfig({
   markdown: {
     lineNumbers: true,
   },
+  head: [
+    ["link", { rel: "icon", href: "/blog/images.jfif" }],
+    ["link", { rel: "preconnect", href: "https://fonts.googleapis.com" }],
+    [
+      "link",
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossorigin: "" },
+    ],
+    [
+      "link",
+      {
+        href: "https://fonts.googleapis.com/css2?family=Roboto&display=swap",
+        rel: "stylesheet",
+      },
+    ],
+    [
+      "script",
+      {
+        async: "",
+        src: "https://www.googletagmanager.com/gtag/js?id=G-RYWJMQZD8D",
+      },
+    ],
+    [
+      "script",
+      {},
+      `window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-RYWJMQZD8D');`,
+    ],
+  ],
   base: "/blog/",
   vite: {
     ssr: {
@@ -38,6 +68,7 @@ export default defineConfig({
         items: [
           { text: "grammar", link: "/javascript/grammar/introduction" },
           { text: "application", link: "/javascript/application/firstFrame" },
+          { text: "算法", link: "/javascript/algorithm" },
         ],
       },
       {
@@ -58,8 +89,15 @@ export default defineConfig({
         ],
       },
       { text: "性能优化", link: "/optimization/image" },
+      { text: "项目配置", link: "/configure/project" },
       { text: "Node", link: "/node/initial" },
-      { text: "Vite", link: "/vite/initial" },
+      {
+        text: "构建工具",
+        items: [
+          { text: "Vite", link: "bundle/vite/initial" },
+          { text: "Webpack", link: "/bundle/webpack/treeShaking" },
+        ],
+      },
     ],
 
     sidebar: {
@@ -75,6 +113,10 @@ export default defineConfig({
             {
               text: "富文本提取纯文字",
               link: "/javascript/application/extractText",
+            },
+            {
+              text: "虚拟列表",
+              link: "/javascript/application/virtualList",
             },
           ],
         },
@@ -142,6 +184,12 @@ export default defineConfig({
           ],
         },
       ],
+      "/javascript/algorithm": [
+        {
+          text: "开始",
+          link: "/javascript/algorithm",
+        },
+      ],
       "/frame/react/": [
         {
           text: "开始",
@@ -180,6 +228,12 @@ export default defineConfig({
               link: "/Web-Api/webWork",
             },
           ],
+        },
+      ],
+      "/configure/": [
+        {
+          text: "项目配置",
+          items: [{ text: "检查git commit内容", link: "/configure/project" }],
         },
       ],
       "/pnpm/": [
@@ -228,6 +282,17 @@ export default defineConfig({
             {
               text: "性能监控",
               link: "/browser/devtool/monitor",
+            },
+          ],
+        },
+      ],
+      "/bundle/webpack/": [
+        {
+          text: "webpack",
+          items: [
+            {
+              text: "树摇",
+              link: "/bundle/webpack/treeShaking",
             },
           ],
         },
