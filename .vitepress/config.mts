@@ -248,7 +248,10 @@ export default defineConfig({
       "/vscode/": [
         {
           text: "vscode",
-          items: [{ text: "插件", link: "/vscode/extension" }],
+          items: [
+            { text: "插件", link: "/vscode/extension" },
+            { text: "快捷键", link: "/vscode/keybinding" },
+          ],
         },
       ],
       "/node/": [
