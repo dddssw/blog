@@ -27,11 +27,13 @@ pnpm exec commitlint --config commitlint.config.js --edit "${1}"
 ## cz-git
 ```js
 npm install -D cz-git
+npm install -D czg
 
 // 修改 package.json 添加 config 指定使用的适配器
 {
   "scripts": {
-
+    //添加命令
+   "cz": "czg"
   },
   "config": {
     "commitizen": {
