@@ -80,8 +80,8 @@ module.exports = defineConfig({
       { value: "account", name: "account:   账户相关" },
       { value: "comment", name: "comment:   评论相关" },
     ],
-    allowCustomScopes: true,
-    allowEmptyScopes: true,
+    allowCustomScopes: false,
+    allowEmptyScopes: false,
     customScopesAlign: "bottom",
     customScopesAlias: "custom",
     emptyScopesAlias: "empty",
@@ -90,7 +90,7 @@ module.exports = defineConfig({
     allowBreakingChanges: ["feat", "fix"],
     breaklineNumber: 100,
     breaklineChar: "|",
-    skipQuestions: [],
+    skipQuestions: ["breaking", "confirmCommit", "body"],
     issuePrefixes: [
       { value: "closed", name: "closed:   ISSUES has been processed" },
     ],
@@ -105,5 +105,6 @@ module.exports = defineConfig({
     defaultIssues: "",
     defaultScope: "",
     defaultSubject: "",
+    defaultFooterPrefix: "Closed",
   },
 });
