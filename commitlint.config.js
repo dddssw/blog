@@ -4,7 +4,7 @@ module.exports = defineConfig({
   rules: {
     // @see: https://commitlint.js.org/#/reference-rules
   },
-  extends: ['@commitlint/config-conventional'],
+  extends: ["@commitlint/config-conventional"],
   prompt: {
     alias: { fd: "docs: fix typos" },
     messages: {
@@ -74,7 +74,12 @@ module.exports = defineConfig({
     useAI: false,
     aiNumber: 1,
     themeColorCode: "",
-    scopes: [],
+    scopes: [
+      { value: "app", name: "app:       系统业务" },
+      { value: "home", name: "home:      首页相关" },
+      { value: "account", name: "account:   账户相关" },
+      { value: "comment", name: "comment:   评论相关" },
+    ],
     allowCustomScopes: true,
     allowEmptyScopes: true,
     customScopesAlign: "bottom",
