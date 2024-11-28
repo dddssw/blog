@@ -78,7 +78,7 @@ module.exports = defineConfig({
       { value: "app", name: "app:       系统业务" },
       { value: "home", name: "home:      首页相关" },
       { value: "account", name: "account:   账户相关" },
-      { value: "comment", name: "comment:   评论相关" },
+     // { value: "comment", name: "comment:   评论相关" },
     ],
     allowCustomScopes: false,
     allowEmptyScopes: false,
