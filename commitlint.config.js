@@ -97,7 +97,7 @@ module.exports = defineConfig({
     customIssuePrefixAlign: "top",
     emptyIssuePrefixAlias: "skip",
     customIssuePrefixAlias: "custom",
-    allowCustomIssuePrefix: true,
+    allowCustomIssuePrefix: false,
     allowEmptyIssuePrefix: true,
     confirmColorize: true,
     scopeOverrides: undefined,
