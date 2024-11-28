@@ -24,3 +24,21 @@ npx husky init
 //.husky/commit-msg
 pnpm exec commitlint --config commitlint.config.js --edit "${1}"
 ```
+## cz-git
+```js
+npm install -D cz-git
+
+// 修改 package.json 添加 config 指定使用的适配器
+{
+  "scripts": {
+
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-git"
+    }
+  }
+}
+
+//cz-git 与 commitlint 进行联动给予校验信息，所以可以编写于 commitlint 配置文件之中
+```
