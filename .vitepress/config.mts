@@ -86,6 +86,7 @@ export default defineConfig({
         items: [
           { text: "about", link: "/browser/about/overview" },
           { text: "dev-tool", link: "/browser/devtool/source" },
+          { text: "http", link: "/browser/http/introduct" },
         ],
       },
       { text: "性能优化", link: "/optimization/image" },
@@ -117,6 +118,10 @@ export default defineConfig({
             {
               text: "虚拟列表",
               link: "/javascript/application/virtualList",
+            },
+            {
+              text: "文件切片上传",
+              link: "/javascript/application/fileSlice",
             },
           ],
         },
@@ -267,6 +272,14 @@ export default defineConfig({
             { text: "深入了解现代网络浏览器", link: "/browser/about/overview" },
             { text: "性能指标", link: "/browser/about/performanceTags" },
             { text: "渐进式渲染", link: "/browser/about/progressiveRendering" },
+          ],
+        },
+      ],
+      "/browser/http/": [
+        {
+          text: "http",
+          items: [
+            { text: "概述", link: "/browser/http/introduct" },
           ],
         },
       ],

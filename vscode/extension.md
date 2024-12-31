@@ -84,3 +84,37 @@ vscode.workspace.getConfiguration('jsonOutline').get('autorefresh', false);
 vscode.window.activeTextEditor.document.uri.scheme === 'file'//区分本地还是远程文件
 vscode.window.activeTextEditor.document.languageId === 'json'//语言标识符
 ```
+
+## 注册命令
+使用 registerCommand 进行注册，并且在package.json进行注册
+```js
+//package.json
+"contributes": {
+    "commands": [
+      {
+        "command": "speed-up.element-plus",
+        "title": "insert element-plus"
+      }
+	]
+}
+```
+在命令面板搜 title:`insert element-plus`,而不是`speed-up.element-plus`
+
+
+# 插件speed up （zustand 全局状态管理）
+## 功能1
+生成element-plus模板，需要结合脚手架
+### 使用
+1. 集成终端搜索`active element-plus termine`,在这个终端下进行脚手架命令，执行脚手架(snippetvue)交互(命令名：gen el)，等待代码生成
+2. 文件编辑器鼠标右键有一个`插入element-plus组件模板`,点击就会在光标的位置进行插入
+
+### 思路
+1. vscode创建终端，注意是集成终端，在终端执行脚手架命令，执行完毕，在onDidEndTerminalShellExecution可以监听到，但是他们之间通信不了
+2. 所以脚手架执行完之后将数据保存在一个文件，onDidEndTerminalShellExecution监听脚手架命令执行完毕再读取这个文件拿到数据
+3. 拿到数据存在全局，在当前编辑文件右击多出一个 `插入element-plus组件模板` 的命令
+
+# 脚手架snippetvue
+## 功能1
+`gen el`  
+
+生成element plus组件代码模板
