@@ -280,6 +280,7 @@ export default defineConfig({
           text: "http",
           items: [
             { text: "概述", link: "/browser/http/introduct" },
+            { text: "跨域", link: "/browser/http/crossorigin" },
           ],
         },
       ],
