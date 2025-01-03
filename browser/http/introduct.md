@@ -40,7 +40,7 @@ HTTP2允许在单个tcp内处理多个请求和响应,这是通过将信息包�
 有几种模型：短期连接、持久连接和HTTP 流水线
 
 后面两种是1.1新引入的
-<img src="https://developer.mozilla.org/en-US/docs/Web/HTTP/…on_management_in_HTTP_1.x/http1_x_connections.png" alt="比较三种 HTTP/1.x 连接模型的性能：短暂连接、持久连接和 HTTP 流水线。" width="1012" height="670" loading="lazy">
+<img src="https://developer.mozilla.org/en-US/docs/Web/HTTP/Connection_management_in_HTTP_1.x/http1_x_connections.png" alt="比较三种 HTTP/1.x 连接模型的性能：短暂连接、持久连接和 HTTP 流水线。" width="1012" height="670" loading="lazy">
 
 ### 短暂连接（1.0默认模型）
 HTTP/1.0 默认为每一对 HTTP 请求/响应都打开一个单独的 TCP 连接，通过设置connection除了close之外任何值会变成持久化
