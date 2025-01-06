@@ -186,6 +186,10 @@ export default defineConfig({
               text: "冒泡与捕获",
               link: "/javascript/grammar/bubbling",
             },
+            {
+              text: "词法环境",
+              link: "/javascript/grammar/lexicalEnvironment",
+            },
           ],
         },
       ],
