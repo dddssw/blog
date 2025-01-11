@@ -74,7 +74,7 @@ export default defineConfig({
       {
         text: "框架",
         items: [
-          { text: "Vue", link: "/frame/vue/start" },
+          { text: "Vue", link: "/frame/vue/reactivity" },
           { text: "React", link: "/frame/react/start" },
         ],
       },
@@ -211,6 +211,16 @@ export default defineConfig({
         {
           text: "状态管理",
           link: "/frame/react/manage",
+        },
+      ],
+      "/frame/vue/": [
+        {
+          text: "响应式原理",
+          link: "/frame/vue/reactivity",
+        },
+        {
+          text: "api源码",
+          link: "/frame/vue/apis",
         },
       ],
       "/Web-Api/": [
