@@ -67,7 +67,7 @@ cpu(Central Processing Unit) gpu(Graphics Processing Unit) 是浏览器的核心
 当 HTML 解析器发现标签时script，它会暂停 HTML 文档的解析，并加载、解析和执行 JavaScript 代码
 
 ### 提示浏览器如何加载资源
-如果不希望阻塞解析，则可以将async或defer属性添加到script标签中。然后，浏览器会异步加载和运行 JavaScript 代码，并且不会阻止解析。如果合适，您也可以使用JavaScript 模块。link rel="preload"是一种通知浏览器当前导航肯定需要该资源并且希望尽快下载的方法。
+如果不希望阻塞解析，则可以将async或defer属性添加到script标签中。然后，浏览器会异步加载和运行 JavaScript 代码，并且不会阻止解析。如果合适，您也可以使用JavaScript 模块。link rel="preload"（它也不会加载和执行脚本，而只会安排以更高的优先级下载和缓存它）是一种通知浏览器当前导航肯定需要该资源并且希望尽快下载的方法。
 
 
 ### 样式计算
