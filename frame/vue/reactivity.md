@@ -155,3 +155,21 @@ activeEffect 还原为之前的值
 34 obj.foo++
 35 obj.foo++
 ```
+## 响应式原理
+Vue的响应式系统在运行时跟踪属性的访问，它通过结合proxy包装器和getter/setter函数来实现。
+
+proxy第一个参数是被代理对象，第二个参数是一组traps，通过这些traps可以控制被代理对象的基本操作。
+
+对于reactive来说，有get、set、deleteProperty、has、ownKeys这些traps，在get中触发track依赖收集。
+
+在track内部我们会检查当前是否有正在运行的副作用。如果有，我们会查找到一个存储了所有追踪了该属性的订阅者的Set，然后将当前这个副作用作为新订阅者添加到该Set中。
+
+副作用订阅将被存储在一个全局的WeakMap<target, Map<key, Set<effect>>>数据结构中。如果在第一次追踪时没有找到对相应属性订阅的副作用集合，它将会在这里新建。
+
+在set中处理新增和修改属性，会触发trigger派发更新。
+
+在trigger内部，我们会再查找到该属性的所有订阅副作用。但这一次我们需要执行它们。
+
+最常见的响应式副作用就是更新dom。每个组件实例创建一个响应式副作用来渲染和更新dom。
+
+而对于ref，返回一个对象，里面有一个响应式属性value，执行getter时，进行track，执行setter时触发trigger，对于setter的参数value则会使用reactive处理。
