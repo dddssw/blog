@@ -173,3 +173,13 @@ proxy第一个参数是被代理对象，第二个参数是一组traps，通过�
 最常见的响应式副作用就是更新dom。每个组件实例创建一个响应式副作用来渲染和更新dom。
 
 而对于ref，返回一个对象，里面有一个响应式属性value，执行getter时，进行track，执行setter时触发trigger，对于setter的参数value则会使用reactive处理。
+## 双向绑定v-model
+响应式系统是一种单向行为，是从数据到dom的映射，而双向绑定，则是双向行为，当数据改变，dom会更新，而操作dom也会影响数据的变化
+
+而v-model这个内置指令就是一种双向数据绑定的实现
+
+对于普通html标签，利用指令中能访问不同生命周期，当数据发生变化，在更新相关的生命周期里会根据新值修改dom的value
+
+当直接修改dom时，因为通过addeventlisten注册事件，会更新数据
+
+而对于组件，实际上是一个语法糖，相当于传入一个名为modelValue 的prop，和一个名为 update:modelValue 自定义事件，事件的回调函数接受一个参数，执行时会更新modelvalue
