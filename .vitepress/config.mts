@@ -190,6 +190,10 @@ export default defineConfig({
               text: "词法环境",
               link: "/javascript/grammar/lexicalEnvironment",
             },
+            {
+              text: "调试",
+              link: "/javascript/grammar/devtool",
+            },
           ],
         },
       ],
