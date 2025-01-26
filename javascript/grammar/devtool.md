@@ -14,6 +14,7 @@ layout: doc
 <img src="https://s2.loli.net/2025/01/20/GxJAVO5Hb6yzkvd.png" >
 
 手动暂停，查看call stack
+```js
 
 import { highlightCode, consoleInfo } from "../utils/printCode";
 export const infoData = {
@@ -741,3 +742,4 @@ ajax('https://api.example.com/data')
     highlightCode(codeSnippet);
   },
 };
+```
