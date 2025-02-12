@@ -300,6 +300,7 @@ export default defineConfig({
             { text: "概述", link: "/browser/http/introduct" },
             { text: "跨域", link: "/browser/http/crossorigin" },
             { text: "async defer", link: "/browser/http/async-defer" },
+            { text: "http缓存", link: "/browser/http/cache" },
           ],
         },
       ],
