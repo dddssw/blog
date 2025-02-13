@@ -256,7 +256,10 @@ export default defineConfig({
       "/configure/": [
         {
           text: "项目配置",
-          items: [{ text: "检查git commit内容", link: "/configure/project" }],
+          items: [
+            { text: "检查git commit内容", link: "/configure/project" },
+            { text: "难点", link: "/configure/difficult" },
+          ],
         },
       ],
       "/pnpm/": [
