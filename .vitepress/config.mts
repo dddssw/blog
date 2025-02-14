@@ -259,6 +259,7 @@ export default defineConfig({
           items: [
             { text: "检查git commit内容", link: "/configure/project" },
             { text: "难点", link: "/configure/difficult" },
+            { text: "要点", link: "/configure/bagu" },
           ],
         },
       ],

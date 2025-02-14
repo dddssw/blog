@@ -43,6 +43,24 @@ etag也有强弱校验之分，弱校验前面会加上W/，区别是弱校验�
 
 如果强缓存判断过期了，就会进入协商缓存，此时会发送http请求，请求头上会加上If-Modified-Since，If-None-Match,他们的值就是第一次返回的响应标头中的Last-Modified，Etag。如果返回304代表缓存没过期，否则返回200，服务器返回最新资源。
 
+## 启发式缓存
+HTTP 旨在尽可能多地缓存，因此即使没有给出 Cache-Control，如果满足某些条件，响应也会被存储和重用，也就是启发式缓存
+## 补充
+项目通过jekins上部署之后，刷新页面还是原来的内容，这应该也跟缓存有关
 
+注意到浏览器的刷新有三种，正常重新加载，硬性重新加载，清除缓存并硬性重新加载
+
+正常重新加载也就是只是重新加载页面而已，缓存有效还是照用
+
+硬性重新加载会在请求头上加一个cache-control：no-cache,cache-control一般是放在服务器的响应头上，但如果是在请求头上，no-cache允许客户端请求最新的响应即使保存的缓存是新鲜的
+
+并且请求头里也没有协商缓存相关的字段，所以强缓存和协商缓存都没有走。其效果类似于在开发者工具 Network 面板勾选了 Disable cache 选项
+
+清除缓存并硬性重新加载则是额外将我们保存的缓存删除
+
+## localStorage 和 sessionStorage
+* localStorage数据会一直保存，而sessionStorage关闭页签或者窗口会就会删除
+* localStorage同源的所有页签和窗口共享数据，sessionStorage仅在同一页签内共享数据
+* localStorage一般用来保存登录token，用户信息等，sessionStorage则适用于用户暂存的表单等
 ## 参考
 [前端缓存](https://juejin.cn/post/7340676808436547603)
