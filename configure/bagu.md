@@ -23,6 +23,9 @@ console.log("5"); // 同步任务
 
 // 输出顺序：1 → 5 → 3 → 4 → 2
 ```
-宏任务：`setTimeout`、`DOM 事件`、`I/O`
+宏任务：`setTimeout`、`DOM 事件`、`I/O`、`requestAnimationFrame`
 
 微任务：`Promise回调`、`MutationObserver`
+
+## tree-shaking
+基于静态分析，只适用于esm，因为esm是静态的，在编译时就可以确定导入导出，据此去除未使用的代码
