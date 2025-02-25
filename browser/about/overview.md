@@ -2,7 +2,7 @@
 layout: doc
 outline: deep
 ---
-cpu(Central Processing Unit) gpu(Graphics Processing Unit) 是浏览器的核心 ， 操作系统是中间层 ，最外层是应用层
+<!-- cpu(Central Processing Unit) gpu(Graphics Processing Unit) 是浏览器的核心 ， 操作系统是中间层 ，最外层是应用层
 ![alt text](./imgs/image.png)
 
 另外还需要了解的是Process和Thread。
@@ -77,4 +77,12 @@ cpu(Central Processing Unit) gpu(Graphics Processing Unit) 是浏览器的核心
 
 布局是查找元素几何形状的过程。主线程遍历 DOM 和计算样式，并创建包含 xy 坐标和边界框大小等信息的布局树。布局树的结构可能与 DOM 树相似，但它仅包含与页面上可见内容相关的信息。如果display: none应用了，则该元素不是布局树(layout tree)的一部分（但是，具有 的元素visibility: hidden位于布局树中）。同样，如果应用了具有类似内容的伪元素p::before{content:"Hi!"}，则即使它不在 DOM 中，它也包含在布局树中。
 ### paint
-知道这些还不够，还需要判断绘制的顺序，设置了z-index会导致错误的渲染
+知道这些还不够，还需要判断绘制的顺序，设置了z-index会导致错误的渲染 -->
+
+浏览器总体是一个多进程的架构，包括浏览器进程，gpu进程，plugin进程，每个页签都有一个render进程
+
+浏览器进程包括ui线程，网络线程等
+
+render进程又包括主线程，合成器线程，光栅线程
+
+主线程会解析html转化为dom,js会阻塞解析，解析css计算样式，计算布局位置，以及绘制顺序。最后是交给合成器线程和GPU

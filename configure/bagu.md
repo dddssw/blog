@@ -33,5 +33,6 @@ console.log("5"); // 同步任务
 * https还需要通过TLS协议
 * 建立tcp连接
 * 发送http请求
+
 ## tree-shaking
 基于静态分析，只适用于esm，因为esm是静态的，在编译时就可以确定导入导出，据此去除未使用的代码
