@@ -47,7 +47,7 @@ console.log("5"); // 同步任务
 * 代码上要写成支持tree-shaking的格式
 * 图片使用webp格式，进行图片懒加载和组件的懒加载
 * 将cpu密集型任务迁移到webworker上,防抖和节流
-* 使用proload提高关键资源优先级，支持的话尽可能使用HTTP2，使用cdn
+* 使用proload提高关键资源优先级，支持的话尽可能使用HTTP2，使用cdn,如果有跨域连接可以使用preconnect，它会提前建立连接，当然如果过度使用比较消耗资源，dns-prefetch就是更好的替代品
 * 框架上，都支持路由懒加载，react有useMemo,useCallback进行缓存，vue支持组件的懒加载，shallowReactive等api
 * 渲染层上，降低cls，例如图片尽可能设置高度。减少重排和重绘,虚拟列表。动画使用transition，Gpu加速
 * 大文件切片上传
