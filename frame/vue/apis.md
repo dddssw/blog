@@ -2,33 +2,9 @@
 outline: deep
 layout: doc
 ---
-## ref
-通过ref注册的响应式数据，有一个访问器属性value，当getter时收集依赖，setter时派发更新
-
-而对于set的value，使用toReactive进行处理，首先判断数据类型是不是object，如果不是原样返回，反之使用reactive使value也变成响应式数据
-## reactive
-:::tip :rocket:代理
-允许我们拦截并重新定义对一个对象的基本操作
-:::
-基于proxy进行代理，他接受两个参数，第一个参数是被代理对象，第二个参数是一组traps,例如get set,通过这些trap可以控制被代理对象的基本操作
-
-
-对于reactive来说，有get set deleteProperty has ownKeys这些traps
-
-在get中进行track依赖收集，如果value是一个对象，会递归调用reactive实现深度监听。如果value是一个ref类型，会进行自动解包
-
-在set中处理新增和修改属性，进行trigger派发更新
-
-在deleteProperty处理删除属性，触发trigger
-
-在has拦截in操作符，触发track
-
-在ownKeys拦截forin，触发track
-
-通过配置这些traps可以进一步实现shallowreactive，readonly等api
 
 ## computed
-使用computed会返回一个对象，它也有一个访问器属性value，初始化时会执行一遍里面的回调函数，搜集依赖。
+使用computed会返回一个对象，它也有一个访问器属性value.
 
 并且还有两个属性dirty和value，dirty初始化设置为true，代表需要重新执行回调，value则是回调return的值。
 

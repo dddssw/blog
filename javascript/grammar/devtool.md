@@ -228,16 +228,6 @@ function throttle(func, duration) {
     ];
     consoleInfo(list2, "难点");
   },
-  优化: () => {
-    const list = [
-      "图片使用webp格式，进行图片/组件的懒加载,将第三方库上传到cdn",
-      "通过树摇删除无用代码，使用gzip压缩，合理控制打包文件大小，充分利用浏览器缓存策略",
-      "将长任务移动到web worker，防止阻塞页面",
-      "防抖和节流，避免内存泄露",
-      "使用虚拟列表，大文件上传技术",
-    ];
-    consoleInfo(list, "性能优化");
-  },
   scoped: () => {
     const list = [
       "scoped会为组件生成唯一标识，并在dom上添加这个属性，选择器也会在末尾加上这个属性选择器",

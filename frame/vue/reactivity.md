@@ -160,6 +160,8 @@ Vue的响应式系统在运行时跟踪属性的访问，它通过结合proxy包
 
 proxy第一个参数是被代理对象，第二个参数是一组traps，通过这些traps可以控制被代理对象的基本操作。
 
+vue的响应式一般通过两个api实现，reactive和ref
+
 对于reactive来说，有get、set、deleteProperty、has、ownKeys这些traps，在get中触发track依赖收集。
 
 在track内部我们会检查当前是否有正在运行的副作用。如果有，我们会查找到一个存储了所有追踪了该属性的订阅者的Set，然后将当前这个副作用作为新订阅者添加到该Set中。
@@ -173,6 +175,10 @@ proxy第一个参数是被代理对象，第二个参数是一组traps，通过�
 最常见的响应式副作用就是更新dom。每个组件实例创建一个响应式副作用来渲染和更新dom。
 
 而对于ref，返回一个对象，里面有一个响应式属性value，执行getter时，进行track，执行setter时触发trigger，对于setter的参数value则会使用reactive处理。
+
+shallowReactive和readonly这些api都是在此基础上修改traps来实现的
+
+当然vue的响应式是单向的，也就是从数据到dom的映射
 ## 双向绑定v-model
 响应式系统是一种单向行为，是从数据到dom的映射，而双向绑定，则是双向行为，当数据改变，dom会更新，而操作dom也会影响数据的变化
 
@@ -184,6 +190,12 @@ proxy第一个参数是被代理对象，第二个参数是一组traps，通过�
 
 而对于组件，实际上是一个语法糖，相当于传入一个名为modelValue 的prop，和一个名为 update:modelValue 自定义事件，事件的回调函数接受一个参数，执行时会更新modelvalue
 
+## vue2与vue3区别
+* 重构了响应式系统,vue3使用了基于proxy的响应式系统，vue2"
+* 引入了Composition api,使逻辑复用更加方便,
+* 新增了fragment，teleport,suspense这样的内置组件,
+* 使用ts进行重写，在idea中的代码提示效果更好,
+* 在性能方面，优化了模板编译和diff算法，并且支持树摇，打包体积进一步缩小,基于monorepo的架构，使用pnpm进行管理。各个模块之间耦合低，并且可以拆开来单独使用
 ## 编译优化
 * 静态提升，后续更新直接复用，减少了对比的花销
 * 标记虚拟dom节点上的动态属性，在更新时只对比标记的部分

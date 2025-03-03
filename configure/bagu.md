@@ -34,5 +34,20 @@ console.log("5"); // 同步任务
 * 建立tcp连接
 * 发送http请求
 
+处理资源
+* 解析html生成dom树
+* 遇到css生成cssom树
+* 遇到普通js会阻塞html解析，需要下载再执行，加了defer或者async不会阻塞
+* 将dom树和cssom树合成渲染树
+* 计算布局，交给合成器线程和GPU渲染页面
 ## tree-shaking
 基于静态分析，只适用于esm，因为esm是静态的，在编译时就可以确定导入导出，据此去除未使用的代码
+## 性能优化
+* 打包，使用webpack-bundle-analyse分析插件打包产物，对比较大的文件进行拆包，目的是保证不要太小或者太大，因为太大稍微修改之后整个文件就过期了，太小的话http请求会多发送，尽可能利用浏览器的缓存策略，使用gzip或者brotile压缩
+* 代码上要写成支持tree-shaking的格式
+* 图片使用webp格式，进行图片懒加载和组件的懒加载
+* 将cpu密集型任务迁移到webworker上,防抖和节流
+* 使用proload提高关键资源优先级，支持的话尽可能使用HTTP2，使用cdn
+* 框架上，都支持路由懒加载，react有useMemo,useCallback进行缓存，vue支持组件的懒加载，shallowReactive等api
+* 渲染层上，降低cls，例如图片尽可能设置高度。减少重排和重绘,虚拟列表。动画使用transition，Gpu加速
+* 大文件切片上传
