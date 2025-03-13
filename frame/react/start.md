@@ -2,7 +2,15 @@
 outline: deep
 layout: doc
 ---
+
+## 总括
+* React 组件名称必须始终以大写字母开头，而 HTML 标签必须小写。
+* export default指定文件中的主要组件,export也行，不过导入时要按需导入
+* 使用{}进入js
+* 特殊的属性className,style(它接受一个对象)
+* 在 React 中，你可以在渲染时读取三种输入：props，state 和 context。你应该始终将这些输入视为只读。
 ## jsx
+比html更严格
 * 只能返回一个根节点
 * 标签必须闭合
 * 使用驼峰式命名法给大部分属性命名！除了aria-* 和 data-* 属性是以带 - 符号的 HTML 格式书写的
@@ -33,42 +41,9 @@ const MyComponent = (props) => {
 这样是不行的
 :::
 ## 组件
-就是一个返回jsx的函数，在jsx中可以写类似html的东西
-
-jsx 看起来很像 htmlL，但它更严格一些，并且可以显示动态信息。
-```js
-function MyButton() {
-  return (
-    <button>I'm a button</button>
-  );
-}
-```
 :::warning :warning:
 React 组件名称必须始终以大写字母开头，而 HTML 标签必须小写 
 :::
-
-组件可以渲染其他组件，但是 请不要嵌套他们的定义：
-```js
-export default function Gallery() {
-  // 🔴 永远不要在组件中定义组件
-  function Profile() {
-    // ...
-  }
-  // ...
-}
-```
-上面这段代码 非常慢，并且会导致 bug 产生。因此，你应该在顶层定义每个组件：
-```js
-export default function Gallery() {
-  // ...
-}
-
-// ✅ 在顶层声明组件
-function Profile() {
-  // ...
-}
-```
-当子组件需要使用父组件的数据时，你需要 通过 props 的形式进行传递，而不是嵌套定义。
 ## 在 jsx 中通过大括号使用 js
 jsx里面可以放入html，如果需要重新跳回js，可以使用大括号包裹
 ```js{3}
@@ -93,7 +68,7 @@ return (
           height: user.imageSize
         }}
 ```
-这里需要写成一个对象的形式在放到花括号中
+这里需要写成一个对象的形式在放到花括号中，内联 style 属性 使用驼峰命名法编写
 :::
 
 在哪里使用花括号  
@@ -139,6 +114,13 @@ function Card({ children }) {
   {isLoggedIn && <AdminPanel />}
 </div>
 ```
+## 渲染列表
+```jsx
+const listItems = people.map(person => <li>{person}</li>);
+
+return <ul>{listItems}</ul>;
+```
+组件不会把 key 当作 props 的一部分。Key 的存在只对 React 本身起到提示作用。如果你的组件需要一个 ID，那么请把它作为一个单独的 prop 传给组件： <Profile key={id} userId={id} />。
 ## 将 jsx 赋值给变量
 ```jsx{4-8}
 function Item({ name, isPacked }) {

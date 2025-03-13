@@ -166,6 +166,8 @@ setNumber(n=>n+1)
 
 * setNumber(number + 5)：number是0，所以setNumber(0 + 5)。React 将“替换为5”添加到其队列中。
 * setNumber(n => n + 1):n => n + 1是一个更新函数。React将该函数添加到其队列中。
+
+反正里面是函数就是更新state，反之就是直接替换state
 :::
 
 ## 将 state 视为只读的 
