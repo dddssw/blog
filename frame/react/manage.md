@@ -127,8 +127,8 @@ useEffect(() => {
 
 这些浏览器内置组件接收用户的输入：
 
-* <input>
-* <select>
-* <textarea>
+* `<input>`
+* `<select>`
+* `<textarea>`
 
 将value作为prop 传递给这些组件会将其变为受控组件。
