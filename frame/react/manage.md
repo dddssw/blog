@@ -127,8 +127,22 @@ useEffect(() => {
 
 这些浏览器内置组件接收用户的输入：
 
-* <input>
-* <select>
-* <textarea>
+* `<input>`
+* `<select>`
+* `<textarea>`
 
 将value作为prop 传递给这些组件会将其变为受控组件。
+
+## useMemo
+相当于计算属性
+
+memo:props 跟上一次渲染相同的时候它就会跳过本次渲染
+
+```
+const List = memo(function List({ items }) {
+  // ...
+});
+```
+
+## useCallback
+如果你正在编写一个 自定义 Hook，建议将它返回的任何函数包裹在 useCallback 中

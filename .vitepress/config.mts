@@ -278,6 +278,7 @@ export default defineConfig({
           items: [
             { text: "插件", link: "/vscode/extension" },
             { text: "快捷键", link: "/vscode/keybinding" },
+            { text: "视图提供者", link: "/vscode/view" },
           ],
         },
       ],
