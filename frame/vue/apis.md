@@ -36,6 +36,8 @@ watchEffect则是vue提供的创建响应式副作用的api。
 
 keepalive有一个特殊标识表明他是缓存组件,keepalive通过ctx实现与渲染器的通信，keepalive会在ctx上实现activate/deactivate
 
+缓存策略类似于 LRU 缓存，也就是最久没有被使用的先销毁
+
 
 
 
