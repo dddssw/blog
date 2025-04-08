@@ -71,6 +71,7 @@ export default defineConfig({
           { text: "算法", link: "/javascript/algorithm" },
         ],
       },
+      { text: "Rust", link: "/rust/start" },
       {
         text: "框架",
         items: [
@@ -203,6 +204,16 @@ export default defineConfig({
           link: "/javascript/algorithm",
         },
       ],
+      "/rust/": [
+        {
+          text: "开始",
+          link: "/rust/start",
+        },
+        {
+          text: "SWC 插件编写",
+          link: "/rust/swcPlugin",
+        },
+      ],
       "/frame/react/": [
         {
           text: "开始",
@@ -249,6 +260,10 @@ export default defineConfig({
             {
               text: "web work",
               link: "/Web-Api/webWork",
+            },
+            {
+              text: "webAssembly",
+              link: "/Web-Api/webAssembly",
             },
           ],
         },
