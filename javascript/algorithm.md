@@ -397,6 +397,22 @@ var numSquares = function (n) {
 - 0/1 背包，物品只能用一次
 - 完全背包，物品可以用多次
 
+### 最长递增子序列
+```js
+var lengthOfLIS = function(nums) {
+    let max = 1
+    let dp = new Array(nums.length).fill(1)
+    for(let i =1;i<nums.length;i++){
+      for(let j = i-1;j>=0;j--){
+        if(nums[i]>nums[j]){
+          dp[i] = Math.max(dp[i],dp[j]+1)
+        }
+      }
+      max = Math.max(max,dp[i])
+    }
+    return max
+};
+```
 ### 0/1 背包
 
 先初始化数组,长度 target+1,添加默认值,先遍历物品,后遍历背包
@@ -407,6 +423,7 @@ var numSquares = function (n) {
 - 一维:dp[j]代表从容量为 j 的最大价值,为什么能用一维,可以看上当前层只依赖上一层,dp[i]=Math.max(dp[i],dp[i-weight[i]]+value[i])
 - 循环背包时逆序,因为只跟上方和左上方的数据有关,这个时候不能提前更新它
 
+因为在倒序遍历时，更新 dp[j] 只会基于 dp[j-nums[i]]（在前一次循环中已经计算过了），而不会影响 dp[j] 的计算
 ```js
 let dp = new Array(target + 1).fill(false);
 dp[0] = true;
@@ -437,4 +454,255 @@ for (let i = 1; i <= s.length; i++) {
   }
 }
 return dp[s.length];
+```
+### 升级最大子数组
+```js
+var maxProduct = function(nums) {
+    
+};
+```
+### 分割等和子集
+```js
+var canPartition = function(nums) {
+    let sum = nums.reduce((cur,sum)=>cur+sum,0)
+    if(sum%2 === 1){
+      reutnr false
+    }
+    let target = sum / 2
+    let dp = new Array(target + 1)
+    dp[0] = true
+    for(let i = 0;i<nums.length;i++){
+      for(let j = target;j>=nums[i];j--){
+        dp[j] = dp[j] || dp[j-nums[i]]
+      }
+    }
+    return dp[target]
+};
+```
+## 多维动态规划
+
+初始化时多一行多一列，方便处理空的状态(对于下面两题不需要加，因为没有0这种情况)
+
+记得比较 l1[i],l2[i]的值，下标不要越界,循环时 i,j 不要写错了
+## 不同路径
+```js
+var uniquePaths = function(m, n) {
+  let dp = new Array(m).fill().map(()=>[])
+  for(let i = 0;i<m;i++){
+    for(let j = 0;j<n;j++){
+      if(i===0||j===0){
+        dp[i][j] = 1
+      }else{
+        dp[i][j] = dp[i-1][j]+dp[i][j-1]
+      }
+    }
+  }
+  return dp[m-1][n-1]
+};
+```
+### 最小路径和
+dp[0][0] = grid[0][0]
+```js
+var minPathSum = function(grid) {
+    let m = grid.length
+    let n = grid[0].length
+    let dp = new Array(m).fill().map(()=>[])
+    for(let i = 0;i<m;i++){
+      for(let j = 0;j<n;j++){
+        if(i===0&&j===0){
+          dp[i][j] = grid[i][j]
+        }
+        else if(i===0){
+          dp[i][j] = dp[i][j-1] + grid[i][j]
+        }
+        else if(j===0){
+          dp[i][j] = dp[i-1][j] + grid[i][j]
+        }
+        else{
+          dp[i][j] = Math.min(dp[i-1][j],dp[i][j-1]) + grid[i][j]
+        }
+      }
+    }
+    return dp[m-1][n-1]
+};
+```
+### 最长回文子串
+
+```js
+//中心扩散
+var longestPalindrome = function (s) {
+  let max = 0;
+  let res = "";
+  for (let i = 0; i < s.length; i++) {
+    let { c: c1, str: str1 } = isp(i, i);
+    let { c: c2, str: str2 } = isp(i, i + 1);
+    if (c1 > c2 && c1 > max) {
+      res = str1;
+      max = c1;
+    } else if (c2 > max) {
+      res = str2;
+      max = c2;
+    }
+  }
+  return res;
+  function isp(i, j) {
+    let c = 0;
+    while (i >= 0 && j < s.length) {
+      if (s[i] !== s[j]) {
+        return { c, str: s.slice(i + 1, j) };
+      }
+      if (i === j) {
+        c++;
+      } else {
+        c += 2;
+      }
+      i--;
+      j++;
+    }
+    return { c, str: s.slice(i + 1, j) };
+  }
+};
+```
+
+### 最长公共子序列
+
+```js
+var longestCommonSubsequence = function (text1, text2) {
+  let l1 = text1.length;
+  let l2 = text2.length;
+  let dp = new Array(l1 + 1).fill().map(() => []);
+  for (let i = 0; i <= l1; i++) {
+    for (let j = 0; j <= l2; j++) {
+      if (i === 0 || j === 0) {
+        dp[i][j] = 0;
+      } else {
+        dp[i][j] = Math.max(
+          dp[i - 1][j],
+          dp[i][j - 1],
+          dp[i - 1][j - 1] + (text1[i - 1] === text2[j - 1] ? 1 : 0)
+        );
+      }
+    }
+  }
+  return dp[l1][l2];
+};
+```
+
+### 编辑距离
+
+dp[i][j] 代表 word1 中前 i 个字符，变换到 word2 中前 j 个字符，最短需要操作的次数
+
+```js
+var minDistance = function (word1, word2) {
+  let l1 = word1.length;
+  let l2 = word2.length;
+  let dp = new Array(l1 + 1).fill().map(() => []);
+  for (let i = 0; i <= l1; i++) {
+    for (let j = 0; j <= l2; j++) {
+      if (i === 0) {
+        dp[i][j] = j;
+      } else if (j === 0) {
+        dp[i][j] = i;
+      } else {
+        dp[i][j] = Math.min(
+          dp[i - 1][j] + 1,
+          dp[i][j - 1] + 1,
+          dp[i - 1][j - 1] + (word1[i - 1] === word2[j - 1] ? 0 : 1)
+        );
+      }
+    }
+  }
+  return dp[l1][l2];
+};
+```
+
+## 只出现一次的数
+
+异或（^）+ reduce
+
+```js
+return nums.reduce((acc, cur) => acc ^ cur, 0);
+```
+
+## 多数元素
+
+记录一个众数，及其次数
+
+```js
+var majorityElement = function (nums) {
+  let n = nums[0];
+  let c = 1;
+  for (let i = 1; i < nums.length; i++) {
+    if (!n) {
+      n = nums[i];
+      c = 1;
+      continue;
+    }
+    if (nums[i] === n) {
+      c++;
+    } else {
+      c--;
+      if (c === 0) {
+        n = "";
+      }
+    }
+  }
+  return n;
+};
+```
+
+## 荷兰旗
+
+对于 2 才需要回退原来的位置,1 的话之前已经判断过
+
+判断 0 后更新 l
+判断 2 后更新 r, i
+
+```js
+var sortColors = function (nums) {
+  let l = 0;
+  let r = nums.length - 1;
+  for (let i = 0; i <= r; i++) {
+    const val = nums[i];
+    if (val === 0) {
+      [nums[i], nums[l]] = [nums[l], nums[i]];
+      l++;
+    } else if (val === 2) {
+      [nums[i], nums[r]] = [nums[r], nums[i]];
+      i--;
+      r--;
+    }
+  }
+};
+// O(n)
+// O(1)
+```
+
+## 寻找重复数
+
+类比环，然后找到那个成环的节点
+
+```js
+var findDuplicate = function (nums) {
+  let i = 0;
+  let j = 0;
+  while (true) {
+    i = nums[i];
+    j = nums[nums[j]];
+    if (i === j) {
+      break;
+    }
+  }
+  i = 0;
+  while (true) {
+    i = nums[i];
+    j = nums[j];
+    if (i === j) {
+      return i;
+    }
+  }
+};
+
+// O(n)  = O(n) + O(n)
+// O(1)
 ```
