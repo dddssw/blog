@@ -210,6 +210,10 @@ export default defineConfig({
           link: "/rust/start",
         },
         {
+          text: "类型系统",
+          link: "/rust/types",
+        },
+        {
           text: "SWC 插件编写",
           link: "/rust/swcPlugin",
         },
