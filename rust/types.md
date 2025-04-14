@@ -7,7 +7,7 @@ outline: deep
 但是rust支持类型推断,和泛型能帮我们减轻这方面的压力
 
 
-# 类型推断可能不会进行
+# 类型推断可能不会进行(所有权类型，借用类型)
 ```rust
 println!("{}", (-4).abs());//报错
 ```
@@ -15,7 +15,7 @@ println!("{}", (-4).abs());//报错
 
 另外,方法调用的优先级高于一元前缀运算符，因此在将方法应用于负值时要小心
 # 数据类型
-
+固定尺寸的数据类型是可以直接放栈上的，创建和回收都比在堆上动态分配的动态数组性能要好
 ## 整数类型
 
 - **i8**: 8 位宽有符号整数
@@ -71,13 +71,93 @@ as 运算符可以将 bool 值转换为整型,但是无法反向转换
 ## 结构体类型
 
 - **struct S { x: f32, y: f32 }**: 具名字段型结构体
-- **struct T(i32, char);**: 元组型结构体
+- **struct T(i32, char);**: 元组型结构体 struct Color(i32, i32, i32) 元组结构体有类型名，但是无字段名，也就是说字段是匿名的。在有些情况下这很有用，因为想名字是一件很头痛的事情
 - **struct E;**: 单元型结构体，无字段
 
+Rust 有个关键字 impl 可以用来给结构体或其他类型实现方法，也就是关联在某个类型上的函数。
+
+```rust
+struct Rectangle {
+width: u32,
+height: u32,
+}
+impl Rectangle { // 就像这样去实现
+fn area(self) -> u32 { // area就是方法，被放在impl实现体中
+self.width * self.height
+}
+}
+
+```
+self 的完整写法是 self: Self，而 Self 是 Rust 里一个特殊的类型名，它表示正在被实现（impl）的那个类型
+
+Rust 中所有权形式和借用形式总是成对出现，在 impl 的时候也是如此。方法的签名中也会对应三种参数形式
+```rust
+impl Rectangle {
+fn area1(self) -> u32 {
+self.width * self.height
+}
+fn area2(&self) -> u32 {
+self.width * self.height
+}
+fn area3(&mut self) -> u32 {
+self.width * self.height
+}
+}
+```
+关联缓存（静态方法）
+
+关联函数使用类型配合路径符 :: 来调用
+```rust
+impl Rectangle {
+fn numbers(rows: u32, cols: u32) -> u32 {
+rows * cols
+}
+}
+
+Rectangle::numbers(10, 10);
+```
+方法调用的时候，直接在实例上使用 . 操作符调用，然后第一个参数是实例自身，会默认传进去，因此不需要单独写出来。
+
+没有构造函数，所有需要自己写一个类似功能的函数
+```rust
+impl Rectangle {
+pub fn new(width: u32, height: u32) -> Self {
+Rectangle {
+width,
+height,
+}
+}
+}
+
+let rect1 = Rectangle::new(30, 50);
+```
+
+在对结构体做实例化的时候，Rust 又给我们提供了一个便利的设施，Default
+```rust
+#[derive(Debug, Default)] // 这里加了一个Default派生宏
+struct Rectangle {
+width: u32,
+height: u32,
+}
+fn main() {
+let rect1: Rectangle = Default::default(); // 使用方式1
+let rect2 = Rectangle::default(); // 使用方式2
+println!("{:?}", rect1);
+println!("{:?}", rect2);
+}
+// 打印出如下：
+Rectangle { width: 0, height: 0 }
+Rectangle { width: 0, height: 0 }
+```
+
+可以看到，打出来的实例字段值都 0，是因为 u32 类型默认值就是 0。对于通用类型，比如u32 这种类型来说，取 0 是最适合的值了
 ## 枚举类型
 
 - **enum Attend { OnTime, Late(u32)}**: 枚举，或代数数据类型
 
+枚举是rust中最重要也是最强大的复合类型之一
+
+枚举同样能够被 impl
 ## 指针类型
 
 - **Box`<Attend>`**: Box：指向堆中值的拥有型指针
@@ -88,6 +168,9 @@ as 运算符可以将 bool 值转换为整型,但是无法反向转换
 - **String**: UTF-8 字符串，动态分配大小
 - **&str**: 对 `str` 的引用：指向 UTF-8 文本的非拥有型指针
 
+String不是Char的数组，不能使用下标进行访问
+
+很多时候，我们的字符串字面量中用不到 Unicode 字符，只需要 ASCII 字符集。对于这种情况，Rust 还有一种更紧凑的表示法：字节串。用 b 开头，双引号括起来，比如 b"this is a byte string"。这时候字符串的类型已不是字符串，而是字节的数组 [u8; N]，N 为字节数。
 ## 数组类型
 
 - **[f64; 4]**: 数组，固定长度，其元素类型为 `f64`
