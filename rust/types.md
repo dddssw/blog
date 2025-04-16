@@ -155,9 +155,145 @@ Rectangle { width: 0, height: 0 }
 
 - **enum Attend { OnTime, Late(u32)}**: 枚举，或代数数据类型
 
-枚举是rust中最重要也是最强大的复合类型之一
+枚举下的条目被叫做变体，变体可以挂载各种不同的类型
 
-枚举同样能够被 impl
+### 枚举的实例化
+枚举的实例化实际是枚举变体的实例化
+
+```rust
+enum WebEvent {
+PageLoad,
+PageUnload,
+KeyPress(char),
+Paste(String),
+Click { x: i64, y: i64 },
+}
+
+let a = WebEvent::PageLoad;
+let b = WebEvent::PageUnload;
+let c = WebEvent::KeyPress('c');
+let d = WebEvent::Paste(String::from("batman"));
+let e = WebEvent::Click { x: 320, y: 240 };
+```
+
+可以看到，不带负载的变体实例化和带负载的变体实例化不一样。带负载的变体实例化要根据不同变体附带的类型做特定的实例化。
+
+## 类c枚举
+```rust
+// 给枚举变体一个起始数字值
+enum Number {
+Zero = 0,
+One,
+Two,
+}
+// 给枚举每个变体赋予不同的值
+enum Color {
+Red = 0xff0000,
+Green = 0x00ff00,
+Blue = 0x0000ff,
+}
+fn main() {
+// 使用 as 进行类型的转化
+println!("zero is {}", Number::Zero as i32);
+println!("one is {}", Number::One as i32);
+println!("roses are #{:06x}", Color::Red as i32);
+println!("violets are #{:06x}", Color::Blue as i32);
+}
+// 输出
+zero is 0
+one is 1
+roses are #ff0000
+violets are #0000ff
+```
+枚举同样能够被 impl,但是不能对枚举的变体直接 impl
+
+### match
+```rust
+fn main() {
+let number = 13;
+// 你可以试着修改上面的数字值，看看下面走哪个分支
+println!("Tell me about {}", number);
+match number {
+// 匹配单个数字
+1 => println!("One!"),
+// 匹配几个数字
+2 | 3 | 5 | 7 | 11 => println!("This is a prime"),
+// 匹配一个范围，左闭右闭区间
+13..=19 => println!("A teen"),
+// 处理剩下的情况
+_ => println!("Ain't special"),
+}
+}
+```
+### 模式匹配
+模式匹配就是按对象值的结构进行匹配，并且可以取出符合模式的值。
+
+当要匹配的分支只有两个或者在这个位置只想先处理一个分支的时候，可以直接用 if let
+```rust
+let shape_a = Shape::Rectangle;
+match shape_a {
+Shape::Rectangle => {
+println!("1");
+}
+_ => {
+println!("10");
+}
+};
+
+let shape_a = Shape::Rectangle;
+if let Shape::Rectangle = shape_a {
+println!("1");
+} else {
+println!("10");
+
+```
+
+let 本身就支持模式匹配
+```rust
+let shape_a = Shape::Rectangle {width: 10, height: 20};
+// 模式匹配出负载内容
+let Shape::Rectangle {width, height} = shape_a else {
+panic!("Can't extract rectangle.");
+};
+println!("width: {}, height: {}", width, height);
+}
+// 输出
+width: 10, height: 20
+
+
+fn main() {
+let a = (1,2,'a');
+let (b,c,d) = a;
+println!("{:?}", a);
+println!("{}", b);
+println!("{}", c);
+println!("{}", d);
+}
+
+match shape_a {
+Shape::Rectangle(a_rec) => { // 解出一个结构体
+println!("Rectangle {}, {}", a_rec.width, a_rec.height);
+}
+Shape::Triangle(x, y, z) => { // 解出一个元组
+println!("Triangle {:?}, {:?}, {:?}", x, y, z);
+}
+Shape::Circle {origin, radius} => { // 解出一个结构体的字段
+println!("Circle {:?}, {:?}", origin, radius);
+}
+}
+// 输出
+Circle (0, 0), 5
+```
+ Rust 中的模式匹配是一种释放原对象的所有权的方式,从struct中解构会导致所有权的移动
+
+ 当我们只需要不可修改的引用，或可修改的引用
+```rust
+let User {
+ref mut name, // 这里加了一个ref mut
+age,
+student,
+} = a;
+```
 ## 指针类型
 
 - **Box`<Attend>`**: Box：指向堆中值的拥有型指针
@@ -198,3 +334,6 @@ String不是Char的数组，不能使用下标进行访问
 
 - **&dyn Any**: 特型对象，指向任何实现了 `Any` 特性（trait）的类型
 - **&mut dyn Read**: 特型对象，指向任何实现了 `Read` 特性（trait）的类型
+
+# 泛型
+使用时提供类型参数信息用的是::<>，而定义类型参数的时候只用到<>
