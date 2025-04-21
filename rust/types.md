@@ -155,9 +155,268 @@ Rectangle { width: 0, height: 0 }
 
 - **enum Attend { OnTime, Late(u32)}**: 枚举，或代数数据类型
 
-枚举是rust中最重要也是最强大的复合类型之一
+声明之后他就是一种新的数据类型，枚举下的条目被叫做变体，变体可以挂载各种不同的类型
 
-枚举同样能够被 impl
+如果声明一个ip地址，我们可能会用到结构体
+
+```rust
+enum IpAddrKind {
+    V4,
+    V6,
+}
+
+struct IpAddr {
+    kind: IpAddrKind,
+    address: String,
+}
+
+let home = IpAddr {
+    kind: IpAddrKind::V4,
+    address: String::from("127.0.0.1"),
+};
+
+let loopback = IpAddr {
+    kind: IpAddrKind::V6,
+    address: String::from("::1"),
+};
+```
+但是直接使用枚举可以变得更简约
+```rust
+enum IpAddr {
+    V4(String),
+    V6(String),
+}
+
+let home = IpAddr::V4(String::from("127.0.0.1"));
+
+let loopback = IpAddr::V6(String::from("::1"));
+```
+使用枚举而不是结构体还有另一个优势：每个变体可以包含不同类型和数量的关联数据。版本 4 的 IP 地址始终包含四个数值部分，其值介于 0 到 255 之间。如果我们想将V4地址存储为四个u8值，但仍将V6其表示为一个String值，那么使用结构体就无法实现。枚举可以轻松处理这种情况
+
+```rust
+enum IpAddr {
+    V4(u8, u8, u8, u8),
+    V6(String),
+}
+
+let home = IpAddr::V4(127, 0, 0, 1);
+
+let loopback = IpAddr::V6(String::from("::1"));
+```
+
+可以在变体中嵌入多种类型
+```rust
+enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}
+```
+* Quit根本没有与之相关的数据。
+* Move具有命名字段，就像结构体一样。
+* Write包括一个String。
+* ChangeColor包括三个i32值。
+
+也可以在枚举中定义方法
+
+```rust
+    impl Message {
+        fn call(&self) {
+            // method body would be defined here
+        }
+    }
+
+    let m = Message::Write(String::from("hello"));
+    m.call();
+```
+### 枚举Option
+包含在 prelude 中；您无需显式地将其引入作用域。它的变体也包含在 prelude 中：您可以直接使用Some和None
+```rust
+let some_number = Some(5);//Option<i32>
+let some_char = Some('e');Option<char>
+
+let absent_number: Option<i32> = None;//编译器无法推测出类型，所以要显示声明
+```
+当我们拥有一个Some值时，我们知道该值存在，并且该值保存在 中Some。当我们拥有一个None值时，在某种意义上，它的含义与 null 相同：我们没有有效的值
+
+但是这个例子编译不了
+```rust
+    let x: i8 = 5;
+    let y: Option<i8> = Some(5);
+
+    let sum = x + y;//因为x,y是不同类型，自然无法相加
+```
+i8类型我们不需要担心他是一个空值，但是对于类型是`Option<i8>`我们不得不考虑他可能是个空值，所以应该把`Option<i8>`转成i8
+
+为了获得可能为空的值，您必须明确选择将该值的类型设为Option<T>。然后，当您使用该值时，您需要明确处理该值为空的情况。只要值的类型不是 Option<T>，您就可以安全地假设该值不为空
+
+### match
+好的有了枚举可以使用match来增强功能
+```rust
+enum Coin {
+    Penny,
+    Nickel,
+    Dime,
+    Quarter,
+}
+
+fn value_in_cents(coin: Coin) -> u8 {
+    match coin {
+        Coin::Penny => 1,
+        Coin::Nickel => 5,
+        Coin::Dime => 10,
+        Coin::Quarter => 25,
+    }
+}
+```
+match使用上很像if，但是if必须接受一个布尔值。match分支由两部分组成，一个模式和一些代码
+
+如果匹配分支代码较短，我们通常不使用花括号。如果要在匹配分支中运行多行代码，则必须使用花括号
+
+_ 代表默认处理下面的所以情况
+```rust
+ match dice_roll {
+        3 => add_fancy_hat(),
+        7 => remove_fancy_hat(),
+        _ => (),
+    }
+```
+匹配分支的另一个有用特性是它们可以绑定到与模式匹配的值的部分。这就是我们从枚举变量中提取值的方法。
+
+例如匹配`Option<T>`，可以拿到里面的i
+```rust
+ match x {
+            None => None,
+            Some(i) => Some(i + 1),
+        }
+```
+
+模式匹配与数据（所有权）如何交互
+```rust
+let opt: Option<String> = Some(String::from("Hello world"));
+
+match opt {
+    Some(_) => println!("Some!"),
+    None => println!("None!"),
+}
+
+println!("{:?}", opt); // 这段代码可以编译通过，因为 _ 没有获取所有权。
+//_是一个占位符，用于忽略Some内部的值。Rust 并没有移动这个值，opt在匹配后仍然是有效的，你可以在之后使用它
+```
+```rust
+let opt: Option<String> = Some(String::from("Hello world"));
+
+match opt {
+    Some(s) => println!("Some: {}", s),
+    None => println!("None!"),
+}
+
+println!("{:?}", opt); // 这段代码不能编译通过。
+//Some(s)这个模式Some保留内部的String绑定到变量s上，这意味着opt内部的绑定被转移给了s。
+//因此，在match语句执行之后，opt丢失了对String的发票，导致无法再次访问opt，因此编译会报错。
+```
+如果您不想移动数据，但想借用数据，您可以匹配Option引用&opt，而不是直接匹配opt
+```rust
+let opt: Option<String> = Some(String::from("Hello world"));
+
+match &opt {  // 匹配的是 &opt（引用）
+    Some(s) => println!("Some: {}", s),
+    None => println!("None!"),
+}
+
+println!("{:?}", opt); // 这段代码可以编译通过，因为我们只是借用了数据。
+```
+### if let
+```rust
+if let PATTERN = EXPR {
+    // 当 EXPR 匹配 PATTERN 时，执行这部分代码
+}
+```
+if let语法允许你将if和组合let成一种更简洁的方式，以处理匹配一个模式的值，同时忽略其余值。
+```rust
+//如果使用match
+   let config_max = Some(3u8);
+    match config_max {
+        Some(max) => println!("The maximum is configured to be {max}"),
+        _ => (),
+    }
+//使用if let 
+    let config_max = Some(3u8);
+    if let Some(max) = config_max {//Some(max)是我们要匹配的模式。它表示我们希望解出包含的值，并将其绑定到变量max上
+        println!("The maximum is configured to be {max}");
+    }
+
+```
+### 模式匹配
+模式匹配就是按对象值的结构进行匹配，并且可以取出符合模式的值。
+
+当要匹配的分支只有两个或者在这个位置只想先处理一个分支的时候，可以直接用 if let
+```rust
+let shape_a = Shape::Rectangle;
+match shape_a {
+Shape::Rectangle => {
+println!("1");
+}
+_ => {
+println!("10");
+}
+};
+
+let shape_a = Shape::Rectangle;
+if let Shape::Rectangle = shape_a {
+println!("1");
+} else {
+println!("10");
+
+```
+
+let 本身就支持模式匹配
+```rust
+let shape_a = Shape::Rectangle {width: 10, height: 20};
+// 模式匹配出负载内容
+let Shape::Rectangle {width, height} = shape_a else {
+panic!("Can't extract rectangle.");
+};
+println!("width: {}, height: {}", width, height);
+}
+// 输出
+width: 10, height: 20
+
+
+fn main() {
+let a = (1,2,'a');
+let (b,c,d) = a;
+println!("{:?}", a);
+println!("{}", b);
+println!("{}", c);
+println!("{}", d);
+}
+
+match shape_a {
+Shape::Rectangle(a_rec) => { // 解出一个结构体
+println!("Rectangle {}, {}", a_rec.width, a_rec.height);
+}
+Shape::Triangle(x, y, z) => { // 解出一个元组
+println!("Triangle {:?}, {:?}, {:?}", x, y, z);
+}
+Shape::Circle {origin, radius} => { // 解出一个结构体的字段
+println!("Circle {:?}, {:?}", origin, radius);
+}
+}
+// 输出
+Circle (0, 0), 5
+```
+ Rust 中的模式匹配是一种释放原对象的所有权的方式,从struct中解构会导致所有权的移动
+
+ 当我们只需要不可修改的引用，或可修改的引用
+```rust
+let User {
+ref mut name, // 这里加了一个ref mut
+age,
+student,
+} = a;
+```
 ## 指针类型
 
 - **Box`<Attend>`**: Box：指向堆中值的拥有型指针
@@ -198,3 +457,6 @@ String不是Char的数组，不能使用下标进行访问
 
 - **&dyn Any**: 特型对象，指向任何实现了 `Any` 特性（trait）的类型
 - **&mut dyn Read**: 特型对象，指向任何实现了 `Read` 特性（trait）的类型
+
+# 泛型
+使用时提供类型参数信息用的是::<>，而定义类型参数的时候只用到<>
