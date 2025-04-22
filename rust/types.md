@@ -439,7 +439,41 @@ String不是Char的数组，不能使用下标进行访问
 ## 向量类型
 
 - **`Vec<f64>`**: 向量，可变长度，其元素类型为 `f64`
+```rust
+let v: Vec<i32> = Vec::new();//这里是空的所以需要手动指定类型
+let v = vec![1, 2, 3];//如果有数值可以直接使用宏
+```
+填充-push
+读取-通过索引或使用get方法
+```rust
+    let v = vec![1, 2, 3, 4, 5];
 
+    let third: &i32 = &v[2];
+    println!("The third element is {third}");
+
+    let third: Option<&i32> = v.get(2);
+    match third {
+        Some(third) => println!("The third element is {third}"),
+        None => println!("There is no third element."),
+    }
+```
+迭代,必须要借用,否则所有权会丢失
+
+```rust
+let v = vec![100, 32, 57];
+for n_ref in &v {
+    // n_ref has type &i32
+    let n_plus_one: i32 = *n_ref + 1;
+    println!("{n_plus_one}");
+}
+
+//需要修改原来的向量
+let mut v = vec![100, 32, 57];
+for n_ref in &mut v {
+    // n_ref has type &mut i32
+    *n_ref += 50;
+}
+```
 ## 切片类型
 
 - **&[u8]**: 对切片（数组或向量某一部分）的引用，类型为 `u8`
