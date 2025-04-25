@@ -69,24 +69,16 @@ ui方面有两种实现分别是使用treeview或者webview，最终选择使用
 * 首先进行词法分析，将源代码拆分成最小语法单元token,通过有限状态机生成token序列
 * 进行语法分析，根据编程语言的语法规则，将Tokens组合成AST,语法分析器会检验代码是否符合语法规范
 
+
 ## 组件库
-## 瀑布流
-描述
-
-这个瀑布流不太一样，他有搜索功能，瀑布流下的商品列表里附带sku信息，点击不同的sku展示的图片也会发生变化，也就是高度会发生变化，并且我想做成懒加载和响应式的。也就是根据屏幕会变化列数
-
-说一下实现思路,因为后面优化会基于这个
-
-首先对于瀑布流要先拿到它的高度，开始我想让后端返回高宽比，但是后端没时间弄,后来我自己看华为云obs文档，发现可以通过api的方式获取图片信息.对于图片懒加载,是使用了vue的自定义指令以及web api intersectionobserve.最后是关于响应式.这里我使用到web api的resizeobserve,我会根据宽度更新应该展示多少列,然后再把元素重新分配到这些列中
-
+## 瀑布流组件
 性能优化
 
 1. 首先是图片方面,为了降低FCP,LCP
-* 图片格式可以转成webp格式，按照华为云obs文档，在url上添加请求参数可以返回webp格式图片，但是这么请求的图片不会被http缓存，并且每请求一次都会重新进行格式转化，成本会大幅上升。所有需要上传的时候就将图片转成webp格式存放在桶里，返回的时候返回webp即可
-* 按照需求控制图片请求大小，虽然我这里是做的响应式布局，但是我会以第一次计算的列宽作为图片宽度请求,但会回到之前那个问题也就是不会被http缓存，这样虽然可以加速首屏，但是之后每次都需要重新获取。我是通过service worker来解决的。我会拦截指定的图片域名请求，如果没有命中会放入cache中，命中则从cache中取。当然也可以给缓存设置过期时间，类似于强缓存的效果
+* 首先禁止上传gif格式。图片格式可以转成webp格式，按照华为云obs文档，在url上添加请求参数可以返回webp格式图片，但是这么请求的图片不会被http缓存，并且每请求一次都会重新进行格式转化，成本会大幅上升。所有需要上传的时候就将图片转成webp格式存放在桶里，返回的时候返回webp即可
+* 按照屏幕宽度请求合适尺寸的图片，但会回到之前那个问题也就是不会被http缓存，这样虽然可以加速首屏，但是之后每次都需要重新获取。我是通过service worker来解决的。通过拦截指定的图片域名请求，如果没有命中会放入cache中，命中则从cache中取。当然也可以给缓存设置过期时间，类似于强缓存的效果
 * 可以使用preconnect提前建立与obs域名的连接，当然如果需要与多个第三方域建立连接，全部preconnect可能会适得其反，可以替换为dns-prefetch
 * 我观察到现在的协议是http1.1，可以使用http2解决队头阻塞的问题，当然http2也只是解决了http层的阻塞，tcp层的阻塞没有解决，http3就是为了解决tcp层的队头阻塞问题，他使用的是quic协议，基于utp而非tcp，所有下一代方案是使用http3
-* 可以使用cdn,打包后的资源使用Gzip或br压缩
 
 2.代码或者框架层面
 *  我刚才又提到我自己fetch api拿到图片信息,之前是在for循环了一个一个await拿到,但是可以并发发送请求.因为每个网站都有最大连接数,需要写一个限制最大并发数的函数,并发数我设置的是6.
@@ -101,6 +93,140 @@ ui方面有两种实现分别是使用treeview或者webview，最终选择使用
 2. 对于瀑布流组件需要先获取数据才能渲染，为了视觉不会太突兀，这里准备了一个骨架屏
 
 性能指标
-整体得分是从93到96，fcp提升12.5%，lcp提升18.75%，speed index提升了27.27%，在低速网络下因为骨架屏会造成一些cls偏移
+整体得分是从93到96，fcp提升12.5%，lcp提升18.75%，speed index提升了27.27%
 
-本来想加个虚拟列表的功能,但是因为子元素的高度是会变化的,重新计算高度应该不会造成性能问题,有性能问题也可以放到web worker里执行,但是因为虚拟列表部分dom不会渲染,刚才我那个自定义指令因为没有渲染请求下一页好像不会执行,这个问题我还在研究.
+问题
+如果第一页的数据没有铺满屏幕，就会请求两次接口
+
+首先第一次接口拿到数据，然后渲染出来，这个时候intersectionobserve监听到，发送下一次请求，所以我根据第一次接口返回的数据判断是否需要请求下一页（根据total和record.length < pagesize.length）,将这个属性传递给瀑布流组件，是否需要请求下一页
+
+```js
+const CACHE_NAME = 'imageCache'
+// 安装 Service Worker
+self.addEventListener('install', async function () {
+  self.skipWaiting()
+  await caches.open(CACHE_NAME)
+})
+
+// FETCH 事件：拦截资源请求
+self.addEventListener('fetch', function (event) {
+  const url = new URL(event.request.url)
+
+  // 判断域名是否为目标域名
+  if (url.hostname === 'osstoobs20210306.obs.cn-south-1.myhuaweicloud.com') {
+    if (url.searchParams.has('x-image-process')) {
+      // 拦截该请求
+      event.respondWith(cacheFirst(event.request))
+    }
+  }
+})
+const cacheFirst = async (request) => {
+  const responseFromCache = await caches.match(request)
+  //console.log(responseFromCache, 'responseFromCache')
+  if (responseFromCache) {
+    return responseFromCache
+  }
+  const responseFromNetwork = await fetch(request)
+  await putInCache(request, responseFromNetwork.clone())
+  return responseFromNetwork
+}
+const putInCache = async (request, response) => {
+  const cache = await caches.open(CACHE_NAME)
+  await cache.put(request, response)
+}
+```
+## vite环境变量
+标准化package.json脚本命令，为不同环境注入环境变量，并通过环境变量进行动态代理配置，极大减少了切换环境的重复操作并保留其灵活性（注释）
+```js
+    "dev": "vite --host --mode dev",
+    "qa": "vite --host --mode qa",
+    "uat": "vite --host --mode uat",
+    "prod": "vite --host --mode prod",
+    "build-dev": "vite build --mode dev",
+    "build-qa": "vite build --mode qa",
+    "build-uat": "vite build --mode uat",
+    "build": "vite build --mode prod",
+    "postbuild": "node ./build/build.js",
+```
+## 测试环境下打包后自动刷新页面，切换路由时触发，并改造成vite插件
+每次build之后生成一个version.json文件，里面存放创建时的时间戳，当获取远程的文件里的时间戳与本地存放的时间戳不一致时重新刷新页面
+
+刚开始这是一个js文件，在build之后的钩子里执行会生成version文件，但是script脚本中我们有不同环境的build命令，这样写太累赘。所以改成了一个插件，并且根据mode激活或停用该插件（falsy值）
+```js
+import fs from 'fs'
+import path from 'path'
+
+export default function versionPlugin() {
+  return {
+    name: 'geCai-plugin-version', 
+
+    // 在 Vite 构建结束后执行
+    closeBundle() {
+      console.log('build > 文件开始执行！')
+
+      try {
+        const OUTPUT_DIR = 'dist'
+        const VERSION = 'version.json'
+
+        // 生成随机版本号
+        const versionJson = {
+          version: 'V_' + Math.floor(Math.random() * 10000) + Date.now()
+        }
+
+        // 写入 version.json 文件
+        const versionFilePath = path.resolve(process.cwd(), OUTPUT_DIR, VERSION)
+        fs.writeFileSync(versionFilePath, JSON.stringify(versionJson))
+        console.log(`version file is built successfully at ${versionFilePath}`)
+      } catch (error) {
+        console.error('version build error:\n' + error)
+        process.exit(1)
+      }
+
+      console.log('build > 文件执行结束！')
+    }
+  }
+}
+
+```
+## vite打包优化 
+vite build速度优化，大约提升60%
+* 性能瓶颈主要是降级插件导致的，所以只在生产坏境开启降级插件，减少开发环境下的等待时间
+* 禁用生成gzip压缩报告，不生成sourcemap
+* vite使用esbuild进行构建，也在同步研发rolldown来进一步提升速度
+
+vite构建产物优化
+* 图片上传到oss，并接入cdn。小图片转成内联的base64
+* 代码分割,进一步还可以将第三方包放到cnd上
+* 支持tree-shaking的写法
+```js
+  rollupOptions: {
+        output: {
+          entryFileNames: 'js/[name].[hash].js',
+          assetFileNames: '[ext]/[name].[hash].[ext]',
+          // 拆分js到模块文件夹
+          chunkFileNames: (chunkInfo) => {
+            const facadeModuleId = chunkInfo.facadeModuleId
+              ? chunkInfo.facadeModuleId.split('/')
+              : []
+            const fileName = facadeModuleId[facadeModuleId.length - 2] || '[name]'
+            return `js/${fileName}/[name].[hash].js`
+          },
+          manualChunks: (id) => {
+            console.log(id)//路径
+            if (id.includes('node_modules')) {
+              // 独立分包核心库（如 Vue、React）
+              if (id.includes('vue')) return 'vendor-vue'
+              if (id.includes('element-plus')) return 'elementPlus'
+              // 按包名拆分第三方库
+              const libName = id.split('node_modules/')[1].split('/')[0]
+              return `vendor-${libName}`
+            }
+            // 业务代码按功能模块拆分
+            if (id.includes('src/features/')) {
+              return 'feature-modules'
+            }
+          }
+        }
+      }
+```
+[参考](https://vite.dev/config/)
