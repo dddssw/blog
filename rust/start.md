@@ -130,15 +130,6 @@
 
 ---
 
-### **示例学习路径**
-1. **第1周**：安装环境，通读《The Book》前 6 章，写一个猜数字游戏。
-2. **第2周**：完成 Rustlings 练习，理解所有权和错误处理。
-3. **第3周**：用 `struct` 和 `trait` 实现一个简单的博客系统。
-4. **第4周**：学习异步编程，用 `reqwest` + `tokio` 写一个并发网络爬虫。
-5. **第5周**：贡献一个开源项目或参与代码审查。
-
----
-
 通过结合理论学习和实践项目，你会逐步克服 Rust 的陡峭学习曲线，最终掌握这门强大且现代的语言。遇到问题时，记住 Rust 社区以友好著称，随时可以寻求帮助！ 🚀
 
 ## 编译型/解释型语言
@@ -164,3 +155,49 @@ fn test_gcd() {
 * #[test]：标记 test_gcd 为测试函数，在正常编译时会跳过它。
 * 但是，当我们使用 cargo test 命令运行程序时，Cargo 会自动包含并运行所有标记为测试的函数。
 * 测试函数可以分散在源代码树中的任何位置，紧跟着它们所测试的代码。cargo test 会自动收集并运行这些测试函数。
+
+## 所有权
+引用是非拥有指针
+```rust
+fn main() {
+    let m1 = String::from("Hello");
+    let m2 = String::from("world");
+    greet(&m1, &m2); // note the ampersands
+    let s = format!("{} {}", m1, m2);
+}
+
+fn greet(g1: &String, g2: &String) { // 指向栈
+    println!("{} {}!", g1, g2);
+}
+```
+
+取消引用
+
+```rust
+fn main() {
+let mut x: Box<i32> = Box::new(1);
+let a: i32 = *x;         // *x reads the heap value, so a = 1
+*x += 1;                 // *x on the left-side modifies the heap value,
+                         //     so x points to the value 2
+
+let r1: &Box<i32> = &x;  // r1 points to x on the stack
+let b: i32 = **r1;       // two dereferences get us to the heap value
+
+let r2: &i32 = &*x;      // r2 points to the heap value directly,取消引用该框以获取堆上的值，然后创建对该值的引用
+let c: i32 = *r2;    // so only one dereference is needed to read it
+}
+```
+取消引用允许您访问或修改存储在引用中的数据，例如Box，它将数据保存在堆上，而引用本身存储在栈上。
+
+* 一个所有权型变量的可变引用与不可变引用的作用域不能交叠
+* 同一个所有权型变量的可变借用之间的作用域也不能交叠
+* 在有借用存在的情况下，不能通过原所有权型变量对值进行更新。当借用完成后（借用的作用域结束后），物归原主，又可以使用所有权型变量对值做更新操作了
+
+## 修复所有权错误
+```rust
+fn return_a_string() -> &String {
+    let s = String::from("Hello world");
+    &s
+}
+// s生命周期在函数执行后就会消亡
+```
