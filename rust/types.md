@@ -201,12 +201,12 @@ enum IpAddr {
 
 let home = IpAddr::V4(127, 0, 0, 1);
 
-let loopback = IpAddr::V6(String::from("::1"));
 ```
 
 可以在变体中嵌入多种类型
-```rust
-enum Message {
+```js
+enum Message 
+{
     Quit,
     Move { x: i32, y: i32 },
     Write(String),
