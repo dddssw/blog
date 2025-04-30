@@ -706,3 +706,92 @@ var findDuplicate = function (nums) {
 // O(n)  = O(n) + O(n)
 // O(1)
 ```
+
+## 滑动窗口
+### 无重复字符的最长子串
+给定一个字符串 s ，请你找出其中不含有重复字符的 最长 子串 的长度。s 可以为空
+
+需要一个map记住之前访问元素的下标，按条件更新左边的指针
+
+获取map里的下标，如果大于或等于左边的指针则更新，返回是这样的要加1(i- j + 1)
+```js
+var lengthOfLongestSubstring = function (s) {
+    let j = 0;
+    let max = 0;
+    let m = new Map();
+    for (let i = 0; i < s.length; i++) {
+        if (m.has(s[i]) && m.get(s[i]) >= j) {
+            j = m.get(s[i]) + 1
+        }
+        m.set(s[i], i)
+        max = Math.max(max, i - j + 1);
+    }
+    return max
+};
+//o(n)
+//o(n)
+```
+### 找到字符串中所有字母异位词
+定长的滑动窗口
+
+
+```js
+var findAnagrams = function (s, p) {
+    if (s.length < p.length) {
+        return []
+    }
+
+    let res = []
+    let c = new Array(26).fill(0)
+    let r = new Array(26).fill(0)
+    for (let i = 0; i < p.length; i++) {
+        c[s[i].charCodeAt() - 'a'.charCodeAt()] += 1
+        r[p[i].charCodeAt() - 'a'.charCodeAt()] += 1
+    }
+    if (isSame()) {
+        res.push(0)
+    }
+    for (let i = p.length; i < s.length; i++) {
+        c[s[i].charCodeAt() - 'a'.charCodeAt()] += 1
+        c[s[i - p.length].charCodeAt() - 'a'.charCodeAt()] -= 1
+        if (isSame()) {
+            res.push(i - p.length + 1)
+        }
+    }
+    return res
+    function isSame() {
+        for (let i = 0; i < c.length; i++) {
+            if (c[i] !== r[i]) {
+                return false
+            }
+        }
+        return true
+    }
+};
+//n(s.length+p.length)
+//n(1)不考虑返回值
+```
+
+### 和为 K 的子数组
+给你一个整数数组 nums 和一个整数 k ，请你统计并返回 该数组中和为 k 的子数组的个数 。子数组是数组中元素的连续非空序列。
+
+一次循环。需要一个map,和sum记录总和
+```js
+var subarraySum = function (nums, k) {
+  let sum = 0
+  let m =new Map([[0,1]])
+  let c= 0
+  for(let val of nums){
+    sum+=val
+    if(m.get(sum-k)){
+        c+=m.get(sum-k)
+    }
+    if(m.get(sum)){
+        m.set(sum,m.get(sum)+1)
+    }else{
+        m.set(sum, 1);
+    }
+  }
+  return c
+};
+```
