@@ -70,174 +70,21 @@ as 运算符可以将 bool 值转换为整型,但是无法反向转换
 字面量 ("lonely hearts",) 就是一个包含单个字符串的元组，它的类型是 (&str,).值后面的逗号是必需的，以用于区分单值元组和简单的括号表达式
 ## 结构体类型
 
-- **struct S { x: f32, y: f32 }**: 具名字段型结构体
-- **struct T(i32, char);**: 元组型结构体 struct Color(i32, i32, i32) 元组结构体有类型名，但是无字段名，也就是说字段是匿名的。在有些情况下这很有用，因为想名字是一件很头痛的事情
-- **struct E;**: 单元型结构体，无字段
-
 Rust 有个关键字 impl 可以用来给结构体或其他类型实现方法，也就是关联在某个类型上的函数。
 
-```rust
-struct Rectangle {
-width: u32,
-height: u32,
-}
-impl Rectangle { // 就像这样去实现
-fn area(self) -> u32 { // area就是方法，被放在impl实现体中
-self.width * self.height
-}
-}
 
-```
 self 的完整写法是 self: Self，而 Self 是 Rust 里一个特殊的类型名，它表示正在被实现（impl）的那个类型
 
 Rust 中所有权形式和借用形式总是成对出现，在 impl 的时候也是如此。方法的签名中也会对应三种参数形式
-```rust
-impl Rectangle {
-fn area1(self) -> u32 {
-self.width * self.height
-}
-fn area2(&self) -> u32 {
-self.width * self.height
-}
-fn area3(&mut self) -> u32 {
-self.width * self.height
-}
-}
-```
-关联缓存（静态方法）
 
-关联函数使用类型配合路径符 :: 来调用
-```rust
-impl Rectangle {
-fn numbers(rows: u32, cols: u32) -> u32 {
-rows * cols
-}
-}
 
-Rectangle::numbers(10, 10);
-```
-方法调用的时候，直接在实例上使用 . 操作符调用，然后第一个参数是实例自身，会默认传进去，因此不需要单独写出来。
-
-没有构造函数，所有需要自己写一个类似功能的函数
-```rust
-impl Rectangle {
-pub fn new(width: u32, height: u32) -> Self {
-Rectangle {
-width,
-height,
-}
-}
-}
-
-let rect1 = Rectangle::new(30, 50);
-```
-
-在对结构体做实例化的时候，Rust 又给我们提供了一个便利的设施，Default
-```rust
-#[derive(Debug, Default)] // 这里加了一个Default派生宏
-struct Rectangle {
-width: u32,
-height: u32,
-}
-fn main() {
-let rect1: Rectangle = Default::default(); // 使用方式1
-let rect2 = Rectangle::default(); // 使用方式2
-println!("{:?}", rect1);
-println!("{:?}", rect2);
-}
-// 打印出如下：
-Rectangle { width: 0, height: 0 }
-Rectangle { width: 0, height: 0 }
-```
-
-可以看到，打出来的实例字段值都 0，是因为 u32 类型默认值就是 0。对于通用类型，比如u32 这种类型来说，取 0 是最适合的值了
 ## 枚举类型
 
-- **enum Attend { OnTime, Late(u32)}**: 枚举，或代数数据类型
+- **enum**: 枚举，或代数数据类型
 
-声明之后他就是一种新的数据类型，枚举下的条目被叫做变体，变体可以挂载各种不同的类型
-
-如果声明一个ip地址，我们可能会用到结构体
-
-```rust
-enum IpAddrKind {
-    V4,
-    V6,
-}
-
-struct IpAddr {
-    kind: IpAddrKind,
-    address: String,
-}
-
-let home = IpAddr {
-    kind: IpAddrKind::V4,
-    address: String::from("127.0.0.1"),
-};
-
-let loopback = IpAddr {
-    kind: IpAddrKind::V6,
-    address: String::from("::1"),
-};
-```
-但是直接使用枚举可以变得更简约
-```rust
-enum IpAddr {
-    V4(String),
-    V6(String),
-}
-
-let home = IpAddr::V4(String::from("127.0.0.1"));
-
-let loopback = IpAddr::V6(String::from("::1"));
-```
-使用枚举而不是结构体还有另一个优势：每个变体可以包含不同类型和数量的关联数据。版本 4 的 IP 地址始终包含四个数值部分，其值介于 0 到 255 之间。如果我们想将V4地址存储为四个u8值，但仍将V6其表示为一个String值，那么使用结构体就无法实现。枚举可以轻松处理这种情况
-
-```rust
-enum IpAddr {
-    V4(u8, u8, u8, u8),
-    V6(String),
-}
-
-let home = IpAddr::V4(127, 0, 0, 1);
-
-```
-
-可以在变体中嵌入多种类型
-```js
-enum Message 
-{
-    Quit,
-    Move { x: i32, y: i32 },
-    Write(String),
-    ChangeColor(i32, i32, i32),
-}
-```
-* Quit根本没有与之相关的数据。
-* Move具有命名字段，就像结构体一样。
-* Write包括一个String。
-* ChangeColor包括三个i32值。
-
-也可以在枚举中定义方法
-
-```rust
-    impl Message {
-        fn call(&self) {
-            // method body would be defined here
-        }
-    }
-
-    let m = Message::Write(String::from("hello"));
-    m.call();
-```
 ### 枚举Option
 包含在 prelude 中；您无需显式地将其引入作用域。它的变体也包含在 prelude 中：您可以直接使用Some和None
-```rust
-let some_number = Some(5);//Option<i32>
-let some_char = Some('e');Option<char>
 
-let absent_number: Option<i32> = None;//编译器无法推测出类型，所以要显示声明
-```
 当我们拥有一个Some值时，我们知道该值存在，并且该值保存在 中Some。当我们拥有一个None值时，在某种意义上，它的含义与 null 相同：我们没有有效的值
 
 但是这个例子编译不了
@@ -249,27 +96,11 @@ let absent_number: Option<i32> = None;//编译器无法推测出类型，所以�
 ```
 i8类型我们不需要担心他是一个空值，但是对于类型是`Option<i8>`我们不得不考虑他可能是个空值，所以应该把`Option<i8>`转成i8
 
-为了获得可能为空的值，您必须明确选择将该值的类型设为Option<T>。然后，当您使用该值时，您需要明确处理该值为空的情况。只要值的类型不是 Option<T>，您就可以安全地假设该值不为空
+为了获得可能为空的值，您必须明确选择将该值的类型设为`Option<T>`。然后，当您使用该值时，您需要明确处理该值为空的情况。只要值的类型不是 `Option<T>`，您就可以安全地假设该值不为空
 
 ### match
 好的有了枚举可以使用match来增强功能
-```rust
-enum Coin {
-    Penny,
-    Nickel,
-    Dime,
-    Quarter,
-}
 
-fn value_in_cents(coin: Coin) -> u8 {
-    match coin {
-        Coin::Penny => 1,
-        Coin::Nickel => 5,
-        Coin::Dime => 10,
-        Coin::Quarter => 25,
-    }
-}
-```
 match使用上很像if，但是if必须接受一个布尔值。match分支由两部分组成，一个模式和一些代码
 
 如果匹配分支代码较短，我们通常不使用花括号。如果要在匹配分支中运行多行代码，则必须使用花括号

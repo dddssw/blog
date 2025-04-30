@@ -218,16 +218,8 @@ export default defineConfig({
           link: "/rust/creat",
         },
         {
-          text: "错误处理",
-          link: "/rust/errorHandle",
-        },
-        {
           text: "trait",
           link: "/rust/trait",
-        },
-        {
-          text: "SWC 插件编写",
-          link: "/rust/swcPlugin",
         },
       ],
       "/bundle/vite": [
