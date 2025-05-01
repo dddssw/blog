@@ -56,3 +56,81 @@ console.log("5"); // 同步任务
 * 代码上要写成支持tree-shaking的格式以及提高复用率变相降低打包体积，框架上，都支持路由懒加载，react有useMemo,useCallback进行缓存，vue支持组件的懒加载，shallowReactive等api
 * 渲染层上，降低cls，例如图片尽可能设置高度。减少重排和重绘,虚拟列表。动画使用tranform，Gpu加速
 * 具体的计算例如：大文件切片上传，将cpu密集型任务迁移到webworker上,防抖和节流
+
+## 实现promise.all/allSettled
+* 接收一个可迭代对象
+* 传入的数据中可以是普通数据，也可以是Promise对象
+* 可迭代对象的promise是并行执行的
+* 保持输入数组的顺序和输出数组的顺序一致
+* 传入数组中只要有一个reject，立即返回reject
+* 所有数据resolve之后返回结果
+
+```js
+function myPromiseAll(promises){
+  return new Promise((resolve,reject)=>{
+    if(!Boolean(promises[Symbol.iterator])){
+      return reject(new TypeError (`${typeof promises} is not iterable(cannot read property Symbol(Symbol.iterator)`))
+    }
+    let res = []
+    let completed = 0
+    if(promises.length===0){
+      return resolve(res)//return ,后面不需要执行
+    }
+    promises.forEach((item,index)=>{
+      Promise.reslove(item).then(value=>{
+        res[index] = value
+        completed++
+        if(completed===promises.length){
+          resolve(res)
+        }
+      }).catch(error=>{
+        reject(err)
+      })
+    })
+  })
+}
+```
+
+
+```js
+function myPromiseAllSettled(promises){
+     return new Promise((resolve,reject)=>{
+      if(!Boolean(promises[Symbol.iterator])){
+        return reject(new TypeError(`${typeof promises} is not iterable(cannot read property Symbol(Symbol.iterator)`))
+      }
+      let res = []
+      let completed = 0
+      if(promises.length===0){
+        return resolve(res)
+      }
+      promises.forEach((item,index)=>{
+        promise.resolve(item).then(value=>{
+          res[index]={status:'fulfilled',value}
+        }).catch(reson=>{
+          res[index]={status:'rejected',reason}
+        }).finally(()=>{
+          completed++
+          if(completed===promises.length){
+            resolve(res)
+          }
+        })
+      })
+     })
+}
+```
+
+## 控制并发
+```js
+async function limit(urls,max){
+  let res = []
+  let s = new Set()
+  for(let i = 0;i<urls.length;i++){
+    if(s.size===max){
+      await Promise.race(s)
+    }
+    const fn =
+  }
+  await Promise.all(s)
+  return res
+}
+```

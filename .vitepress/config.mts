@@ -214,8 +214,22 @@ export default defineConfig({
           link: "/rust/types",
         },
         {
-          text: "SWC 插件编写",
-          link: "/rust/swcPlugin",
+          text: "creat",
+          link: "/rust/creat",
+        },
+        {
+          text: "trait",
+          link: "/rust/trait",
+        },
+      ],
+      "/bundle/vite": [
+        {
+          text: "开始",
+          link: "/bundle/vite/initial",
+        },
+        {
+          text: "环境变量",
+          link: "/bundle/vite/env",
         },
       ],
       "/frame/react/": [
@@ -268,6 +282,10 @@ export default defineConfig({
             {
               text: "webAssembly",
               link: "/Web-Api/webAssembly",
+            },
+            {
+              text: "service work",
+              link: "/Web-Api/serviceWork",
             },
           ],
         },
