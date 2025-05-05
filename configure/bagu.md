@@ -128,7 +128,11 @@ async function limit(urls,max){
     if(s.size===max){
       await Promise.race(s)
     }
-    const fn =
+    const fn = query(urls[i]).then((data)=>{
+      res.push(data)
+      s.delete(fn)
+    })
+    s.add(fn)
   }
   await Promise.all(s)
   return res
