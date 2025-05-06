@@ -8,7 +8,7 @@ outline: deep
 
 ## 递归
 
-如果依赖子问题的结果，return dfs(node.left)||dfs(node.right)，当然这只是一个示例，来利用子问题的结果
+如果依赖子问题的结果，return dfs(node.left)||dfs(node.right)，当然这只是一个示例，来利用子问题的结果(如果节点为空的情况,如果是依赖子问题的答案,要注意返回什么)
 
 如果不依赖子问题的结果，例如查找某个子节点符合 XX 要求，需要根据子问题 return 的结果做判断，更新全局变量，所以一般需要在一个函数里执行一个 dfs 函数
 
@@ -53,7 +53,24 @@ var levelOrder = function (root) {
   return res;
 };
 ```
-
+### 二叉树的直径
+空节点返回-1,因为后面要加一,代表下面的节点数
+```js
+var diameterOfBinaryTree = function(root) {
+    let max = 0
+    function dfs(node){
+        if(!node){
+            return -1
+        }
+        let left = dfs(node.left)
+        let right = dfs(node.right)
+        max=Math.max(max,left+right+2)
+        return Math.max(left,right)+1
+    }
+    dfs(root)
+    return max
+};
+```
 ### 将有序数组转成二叉搜索树
 
 二叉搜索树的中序遍历就是有序数组
@@ -80,7 +97,7 @@ var sortedArrayToBST = function (nums) {
 
 ### 对称二叉树
 
-dfs 也接受两个参数，当然最开始是都是 root
+dfs 也接受两个参数，当然最开始是都是 root,需要比较node1.left,node2.right  node1.right,node2.left
 
 ### 最近的祖先节点
 
@@ -114,14 +131,108 @@ var lowestCommonAncestor = function (root, p, q) {
 这个思路都是一样的，记录总数以及个数在 map 里，这个 map 初始数组 new Map([[0,1]])。再声明一个总和 sum
 
 它不需要依赖子问题的答案，因为已经记录在 map 里，然后类似于回溯吧，递归完还原 map 和 sum
-
+```js{10,11,20,21}
+var pathSum = function (root, targetSum) {
+    let m = new Map([[0, 1]])
+    let sum = 0
+    let max = 0
+    function dfs(node) {
+        if (!node) {
+            return
+        }
+        //注意这块的顺序
+        sum += node.val
+        max += (m.get(sum - targetSum) || 0)
+        if (m.has(sum)) {
+            m.set(sum, m.get(sum) + 1)
+        } else {
+            m.set(sum, 1)
+        }
+        dfs(node.left)
+        dfs(node.right)
+        //注意这块的顺序
+        m.set(sum, m.get(sum) - 1)
+        sum -= node.val
+    }
+    dfs(root)
+    return max
+};
+```
 ### 从前序，中序构造二叉树
 
 从前序可以知道根节点，但是怎么在中序中找到这个节点，除了二分查找之外，也可以使用一个 map 保存数据及其下标
 
-### 递归转迭代（抽象）
+## 递归转迭代（抽象）
 
-需要一个栈，以及一个变量来记住当前遍历的节点.......
+需要一个栈
+### 二叉树的最大深度
+```js
+var maxDepth = function(root) {
+    let max = 0
+    function dfs(node,level){
+        if(!node){
+            return
+        }
+        max=Math.max(max,level)
+        dfs(node.left,level+1)
+        dfs(node.right,level+1)
+    }
+    dfs(root,1)
+    return max
+};
+//转迭代
+var maxDepth = function (root) {
+    if (!root) {
+        return 0
+    }
+    let max = 0
+    let stack = [{ node: root, level: 1 }]
+    while (stack.length !== 0) {
+        const { node, level } = stack.pop()
+        if (!node) {
+            continue
+        }
+        max = Math.max(max, level)
+        stack.push({ node: node.left, level: level + 1 })
+        stack.push({ node: node.right, level: level + 1 })
+    }
+    return max
+};
+```
+### 翻转二叉树
+```js
+var invertTree = function (root) {
+    if (!root) {
+        return root
+    }
+    function dfs(node) {
+        if (!node) {
+            return null
+        }
+        let left = dfs(node.left)
+        let right = dfs(node.right)
+        node.left = right
+        node.right = left
+        return node
+    }
+    dfs(root)
+    return root
+};
+//迭代
+var invertTree = function (root) {
+    if (!root) return root;
+    let stack = [root]
+    while (stack.length !== 0) {
+        const node = stack.pop()
+        let temp = node.left
+        node.left = node.right
+        node.right = temp
+        if (node.left) { stack.push(node.left) }
+        if (node.right) { stack.push(node.right) }
+    }
+    return root
+};
+```
 
 ## 回溯
 
@@ -794,4 +905,114 @@ var subarraySum = function (nums, k) {
   }
   return c
 };
+```
+## 普通数组
+### 最大子数组和
+使用动态规划,以`nums[i]`结尾的dp
+
+nums至少有一个元素
+```js
+var maxSubArray = function (nums) {
+    let dp = [nums[0]]
+    let max = nums[0]
+    for (let i = 1; i < nums.length; i++) {
+        dp[i] = Math.max(dp[i - 1] + nums[i], nums[i])
+        max = Math.max(max, dp[i])
+    }
+    return max
+};
+```
+
+### 合并区间
+先排序
+```js
+var merge = function(intervals) {
+    intervals.sort((a,b)=>a[0]-b[0])
+    let res = [intervals[0]]
+    for(let i=1;i<intervals.length;i++){
+        let cur = res[res.length-1]
+        if(intervals[i][0]>cur[1]){
+            res.push(intervals[i])
+            continue
+        }
+        else{
+            cur[1]=Math.max(cur[1],intervals[i][1])
+        }
+    }
+    return res
+};
+// O(n log n) + O(n) = O(n log n)
+// O(n)
+```
+### 轮转数组
+要先取余
+```js
+var rotate = function (nums, k) {
+    let a = k % nums.length
+    function reverse(i, j) {
+        while (i < j) {
+            [nums[i], nums[j]] = [nums[j], nums[i]]
+            i++
+            j--
+        }
+
+    }
+    reverse(0, nums.length - 1)
+    reverse(0, a - 1)
+    reverse(a, nums.length - 1)
+};
+```
+### 除自身以外数组的乘积
+声明两个数组,分别代表左,右的和.
+```js
+/**
+ * @param {number[]} nums
+ * @return {number[]}
+ */
+var productExceptSelf = function (nums) {
+    let left = [1]
+    let right = []
+    right[nums.length - 1] = 1
+    for (let i = 1; i < nums.length; i++) {
+        left[i] = left[i - 1] * nums[i - 1]
+    }
+    for (let i = nums.length - 2; i >= 0; i--) {
+        right[i] = right[i + 1] * nums[i + 1]
+    }
+    let res = []
+    for (let i = 0; i < nums.length; i++) {
+        res[i] = left[i] * right[i]
+    }
+    return res
+};
+```
+## 矩阵
+### 矩阵置零
+先遍历一遍,收集需要置零的行列
+
+再遍历一遍置零
+```js
+var setZeroes = function (matrix) {
+    let row = new Set()
+    let col = new Set()
+    let m = matrix.length
+    let n = matrix[0].length
+    for (let i = 0; i < m; i++) {
+        for (let j = 0; j < n; j++) {
+            if (matrix[i][j] === 0) {
+                row.add(i)
+                col.add(j)
+            }
+        }
+    }
+    for (let i = 0; i < m; i++) {
+        for (let j = 0; j < n; j++) {
+            if (row.has(i) || col.has(j)) {
+                matrix[i][j] = 0
+            }
+        }
+    }
+};
+//O(m * n)
+//O(m + n)
 ```
