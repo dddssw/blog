@@ -34,11 +34,9 @@ console.log("5"); // 同步任务
 
 如果这是一个域名的话，需要进行dsn解析，因为域名只是方便记忆，访问的话还是需要ip地址
 
-建立tcp连接，如果是https的话，还需要通过tls协议来建立安全连接
+建立tcp连接，如果是https的话，还需要通过tls协议来建立安全连接,然后再发送http请求
 
 拿spa应用举例,根据url请求服务器,如果url最后带斜杠,默认返回下面的index.html,如果没有这个资源,不同网站可能有重定向策略
-
-然后解析这个html,遇到远程资源.再次发送http请求，当然前提是没有命中强缓存，发送http请求，如果命中协商缓存，直接取http缓存即可，否则会将新资源返回
 
 
 浏览器处理资源
@@ -47,6 +45,7 @@ console.log("5"); // 同步任务
 * 遇到普通js会阻塞html解析，需要下载再执行，加了defer或者async不会阻塞
 * 将dom树和cssom树合成渲染树
 * 在主线程计算几何布局，层次，交给合成器线程和GPU渲染页面
+* 请求的资源都会走http缓存
 ## tree-shaking
 基于静态分析，只适用于esm，因为esm是静态的，在编译时就可以确定导入导出，据此去除未使用的代码
 ## 性能优化
@@ -119,7 +118,7 @@ function myPromiseAllSettled(promises){
 }
 ```
 
-## 控制并发
+## 控制并发,错误处理,重试
 ```js
 async function limit(urls,max){
   let res = []
