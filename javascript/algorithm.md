@@ -487,23 +487,7 @@ dp[i]到底代表什么
 - 设置初始值
 - 推导状态转移方程
 
-需要注意如果有 n 个数据,要加上 0 的情况所以需要拿到 dp[n],给的参数注意下标,不要越界取错了值，例如这道题，另外也需要两层 for 循环
 
-### 完全平方数
-
-```js
-var numSquares = function (n) {
-  let dp = [];
-  dp[0] = 0;
-  for (let i = 1; i <= n; i++) {
-    dp[i] = Infinity;
-    for (let j = 1; j * j <= i; j++) {
-      dp[i] = Math.min(dp[i], dp[i - j * j] + 1);
-    }
-  }
-  return dp[n];
-};
-```
 
 - 0/1 背包，物品只能用一次
 - 完全背包，物品可以用多次
@@ -565,6 +549,25 @@ for (let i = 1; i <= s.length; i++) {
   }
 }
 return dp[s.length];
+```
+对于背包问题，需要注意如果有 n 个数据,要加上 0 的情况所以需要拿到 dp[n],给的参数注意下标,不要越界取错了值，例如这道题，另外也需要两层 for 循环。
+
+并且i和j的位置不要写的相反的地方去了
+
+### 完全平方数
+
+```js{5}
+var numSquares = function (n) {
+  let dp = [];
+  dp[0] = 0;
+  for (let i = 1; i <= n; i++) {
+    dp[i] = Infinity;
+    for (let j = 1; j * j <= i; j++) {
+      dp[i] = Math.min(dp[i], dp[i - j * j] + 1);
+    }
+  }
+  return dp[n];
+};
 ```
 ### 升级最大子数组
 ```js
