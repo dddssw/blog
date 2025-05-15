@@ -75,10 +75,19 @@ if ('serviceWorker' in navigator) {
 标准操作是在触发该事件时准备好您的服务工作者以供使用，例如通过使用内置存储 API 创建缓存，并将您想要离线运行应用程序的资产放置在其中
 
 触发此事件的时间点通常是清理旧缓存以及与 Service Worker 先前版本相关的其他内容的好时机。
+### fetch
+fetch 事件对象包含一个 request 属性，其中包含一些有用的信息，可帮助您识别每个请求的类型：
+* url，即 fetch 事件当前正在处理的网络请求的 URL。
+* method，即请求方法（例如 GET 或 POST）。
+* mode，用于描述请求的模式。“navigate”值通常用于区分 HTML 文档请求和其他请求。
+* destination，用于描述所请求内容的类型，以避免使用所请求资源的文件扩展名。
 ### Cache
+Service Worker 技术中不可或缺的一部分是 Cache 接口，它是一个完全独立于 HTTP 缓存的缓存机制。Cache 接口可以在 Service Worker 作用域内以及主线程作用域内访问。
+
 [Cache](https://developer.mozilla.org/zh-CN/docs/Web/API/Cache)
 
 Cache接口为缓存的Request/Response对象提供存储机制,它允许我们存储由响应传递的资源，并以响应的请求为键,键值键名不能是其他类型，否则什么都不会发生
+
 ### CacheStorage
 相当于Cache的集合，通过caches.open创建一个缓存空间
 
@@ -202,8 +211,113 @@ const deleteOldCaches = async () => {
 }
 ```
 ## 导航预加载
-Service Worker 的导航预加载（Navigation Preload）是一种优化技术，用于减少因 Service Worker 启动延迟导致的页面加载延迟
+启用后，导航预加载功能会在发出获取请求后立即开始下载资源，并与 Service Worker 激活同步。这确保了导航到页面后立即开始下载，而不必等到 Service Worker 激活。这种延迟相对较少发生，但一旦发生，则不可避免，并且可能影响很大。
 
+crossorigin="anonymous"
+在 Service Worker 的 activate 事件中，你需要调用 navigationPreload.enable() 来启用导航预加载功能：
+
+```js
+self.addEventListener("activate", (event) => {
+  event.waitUntil(self.registration?.navigationPreload.enable());
+});
+```
+然后使用 event.preloadResponse 在 fetch 事件处理程序中等待预加载资源下载完成。
+```js{5}
+self.addEventListener("fetch", (event) => {
+  event.respondWith(
+    cacheFirst({
+      request: event.request,
+      preloadResponsePromise: event.preloadResponse,//拿到预加载的数据
+      fallbackUrl: "/gallery/myLittleVader.jpg",
+      event,
+    }),
+  );
+});
+```
+新的流程如下：
+
+1. 检查缓存
+2. 等待 event.preloadResponse，它会作为 preloadResponsePromise 传递给 cacheFirst() 函数。如果返回，则缓存结果。
+3. 如果以上两个为空，则进行网络请求。
+```js
+const cacheFirst = async ({
+  request,
+  preloadResponsePromise,
+  fallbackUrl,
+  event,
+}) => {
+  // First try to get the resource from the cache
+  const responseFromCache = await caches.match(request);
+  if (responseFromCache) {
+    return responseFromCache;
+  }
+
+  // Next try to use (and cache) the preloaded response, if it's there
+  const preloadResponse = await preloadResponsePromise;
+  if (preloadResponse) {
+    console.info("using preload response", preloadResponse);
+    event.waitUntil(putInCache(request, preloadResponse.clone()));
+    return preloadResponse;
+  }
+
+  // Next try to get the resource from the network
+  try {
+    const responseFromNetwork = await fetch(request);
+    // response may be used only once
+    // we need to save clone to put one copy in cache
+    // and serve second one
+    event.waitUntil(putInCache(request, responseFromNetwork.clone()));
+    return responseFromNetwork;
+  } catch (error) {
+    const fallbackResponse = await caches.match(fallbackUrl);
+    if (fallbackResponse) {
+      return fallbackResponse;
+    }
+    // when even the fallback response is not available,
+    // there is nothing we can do, but we must always
+    // return a Response object
+    return new Response("Network error happened", {
+      status: 408,
+      headers: { "Content-Type": "text/plain" },
+    });
+  }
+};
+```
+## 深入
+Service Worker 是专门的 JavaScript 资源，充当 Web 浏览器和 Web 服务器之间的代理。它们旨在通过提供离线访问来提高可靠性，并提升页面性能。
+
+Service Worker 是对现有网站的增强。这意味着，即使用户使用不支持 Service Worker 的浏览器访问使用了 Service Worker 的网站，也不会影响任何基础功能。
+
+### 离线访问
+1. 您首先向网络发出请求，然后将响应放在缓存中。
+2. 如果您稍后离线，您将恢复到缓存中该响应的最新版本。
+```js
+// Establish a cache name
+const cacheName = 'MyFancyCacheName_v1';
+
+self.addEventListener('fetch', (event) => {
+  // Check if this is a navigation request
+  if (event.request.mode === 'navigate') {
+    // Open the cache
+    event.respondWith(caches.open(cacheName).then((cache) => {
+      // Go to the network first
+      return fetch(event.request.url).then((fetchedResponse) => {
+        cache.put(event.request, fetchedResponse.clone());
+
+        return fetchedResponse;
+      }).catch(() => {
+        // If the network is unavailable, get
+        return cache.match(event.request.url);
+      });
+    }));
+  } else {
+    return;
+  }
+});
+```
+
+### 调试
+[如何调试 service work](https://web.dev/articles/service-worker-lifecycle#devtools)
 [导航预加载](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers#service_worker_navigation_preload)
 
 [mdn](https://developer.mozilla.org/zh-CN/docs/Web/API/Service_Worker_API)
