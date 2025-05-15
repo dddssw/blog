@@ -1019,3 +1019,60 @@ var setZeroes = function (matrix) {
 //O(m * n)
 //O(m + n)
 ```
+
+## 栈
+### 有效的括号
+需要一个栈,两个数组分别存放`({[`,`]})`.循环数组,不断的刷新栈
+```js
+var isValid = function (s) {
+  let stack = [];
+  let left = ["[", "{", "("];
+  let right = ["]", "}", ")"];
+  for (let val of s) {
+    if (right.includes(val)) {
+      if (stack.length === 0) {
+        return false;
+      }
+      const data = stack.pop();
+      let a = right.findIndex((item) => item === val);
+      let b = left.findIndex((item) => item === data);
+      if(a!==b){
+        return false
+      }
+    }else{
+      stack.push(val)
+    }
+  }
+  if(stack.length!==0){
+    return false
+  }else{
+  return true
+  }
+};
+```
+### 字符串解码
+需要一个栈,还有curStr,curNum.
+
+循环字符串,判断4种情况进行出入栈
+```js
+var decodeString = function (s) {
+  let stack = []
+  let curStr = ''
+  let curNum = 0
+  for(let a of s){
+    if('0'<=a&&a<='9'){
+      curNum=curNum*10+(+a)
+    }else if(a==='['){
+      stack.push([curStr,curNum])
+      curStr = "";
+      curNum = 0;
+    }else if(a ===']'){
+      const [preStr,preNum] = stack.pop()
+      curStr =preStr + curStr.repeat(preNum)
+    }else{
+      curStr += a;
+    }
+  }
+  return curStr;
+};
+```
