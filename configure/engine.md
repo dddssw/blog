@@ -13,15 +13,19 @@ layout: doc
 
 构建与打包
 
-单元测试
-
 CICD
+
+单元测试
 
 前端监控
 
 根据实际项目解决重复性工作,例如编写脚本,插件
 
 ## ast
+### ast原理
+* 首先进行词法分析，将源代码拆分成最小语法单元token,通过有限状态机生成token序列
+* 进行语法分析，根据编程语言的语法规则，将Tokens组合成AST,语法分析器会检验代码是否符合语法规范
+
 ### ast节点查询优化
 优化的本质是减少不必要的AST扫描
 
@@ -31,9 +35,6 @@ CICD
 * 对已解析的文件建立缓存，如果没有修改就没必要重新解析
 * 使用swc代替babel解析ast
 
-### ast原理
-* 首先进行词法分析，将源代码拆分成最小语法单元token,通过有限状态机生成token序列
-* 进行语法分析，根据编程语言的语法规则，将Tokens组合成AST,语法分析器会检验代码是否符合语法规范
 
 ### AST与CST的区别
 * CST (Concrete Syntax Tree, 具体语法的)
@@ -51,5 +52,34 @@ CICD
 
 所有他是语义等价的最小表达
 
-
+### 举例
+```js
+let a = 1
+```
+```js
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "VariableDeclaration",//表示一个完整的变量声明语句
+      "declarations": [//这是一个数组
+        {
+          "type": "VariableDeclarator",//表示单个变量的声明
+          "id": {
+            "type": "Identifier",//标识符节点
+            "name": "a"
+          },
+          "init": {
+            "type": "Literal",//字面量节点
+            "value": 1,
+            "raw": "1"
+          }
+        }
+      ],
+      "kind": "let"
+    }
+  ],
+  "sourceType": "script"
+}
+```
 
