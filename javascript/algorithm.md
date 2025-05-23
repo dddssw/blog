@@ -1076,3 +1076,28 @@ var decodeString = function (s) {
   return curStr;
 };
 ```
+
+### 只出现一次的数
+```js
+var findDuplicate = function (nums) {
+    let i = 0
+    let j = 0
+    while(true){
+        i=nums[i]
+        j=nums[nums[j]]
+        if(i===j){
+            break
+        }
+    }
+    i = 0
+    while(true){
+        i = nums[i]
+        j = nums[j]
+        if(i===j){
+            return i
+        }
+    }
+};
+// o(n)
+// o(1)
+```
