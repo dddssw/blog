@@ -50,6 +50,12 @@ CICD
 
 所有他是语义等价的最小表达
 
+并且ast在工程化中起到了重要作用,例如在webapack.
+
+* 在依赖解析阶段,根据ast导入导出节点,构建依赖图
+* 在代码转化阶段,例如es6转es5,babel就是通过ast解析,转换,生成来实现的
+* tree-shaking也是利用ast进行静态分析
+* UglifyJS也是利用ast进行代码压缩
 ### 举例
 ```js
 let a = 1
