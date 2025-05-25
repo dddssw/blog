@@ -53,9 +53,10 @@ CICD
 并且ast在工程化中起到了重要作用,例如在webapack.
 
 * 在依赖解析阶段,根据ast导入导出节点,构建依赖图
-* 在代码转化阶段,例如es6转es5,babel就是通过ast解析,转换,生成来实现的
+* 在代码转化阶段,例如es6转es5,babel就是通过ast parse,traverse,generate来实现的
 * tree-shaking也是利用ast进行静态分析
 * UglifyJS也是利用ast进行代码压缩
+* vite用的esbuild有个功能是将cjs转出esm,也是通过ast来实现的
 ### 举例
 ```js
 let a = 1
