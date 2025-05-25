@@ -1023,6 +1023,8 @@ var setZeroes = function (matrix) {
 ## 栈
 ### 有效的括号
 需要一个栈,两个数组分别存放`({[`,`]})`.循环数组,不断的刷新栈
+
+栈里只会存放左方向的符号
 ```js
 var isValid = function (s) {
   let stack = [];
@@ -1051,7 +1053,7 @@ var isValid = function (s) {
 };
 ```
 ### 字符串解码
-需要一个栈,还有curStr,curNum.
+需要一个栈,还有curStr,curNum. 栈push的时候把他们当成数组都推进去
 
 循环字符串,判断4种情况进行出入栈
 ```js
@@ -1076,7 +1078,27 @@ var decodeString = function (s) {
   return curStr;
 };
 ```
+### 每日温度
+需要一个栈,比较栈顶元素与遍历到的这个元素做比较,如果小于就弹出
 
+并且要循环比较,直到栈顶元素大于这个当前遍历的元素,然后cur入栈
+
+只需要保存下标既可,温度可以根据下标来寻找
+```js
+var dailyTemperatures = function(temperatures) {
+    let res = new Array(temperatures.length).fill(0)
+    let stack = []
+    for(let i = 0;i<temperatures.length;i++){
+      let cur = temperatures[i]
+      while(stack.length&&temperatures[stack[stack.length-1]]<cur){
+        const index = stack.pop()
+        res[index] = i-index
+      }
+      stack.push(i)
+    }
+    return res
+};
+```
 ### 只出现一次的数
 ```js
 var findDuplicate = function (nums) {
