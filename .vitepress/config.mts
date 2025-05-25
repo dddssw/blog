@@ -196,6 +196,10 @@ export default defineConfig({
               text: "调试",
               link: "/javascript/grammar/devtool",
             },
+            {
+              text: "总结",
+              link: "/javascript/grammar/summary.md",
+            },
           ],
         },
       ],
@@ -299,6 +303,7 @@ export default defineConfig({
             { text: "难点", link: "/configure/difficult" },
             { text: "要点", link: "/configure/bagu" },
             { text: "工程化", link: "/configure/engine" },
+            { text: "性能优化", link: "/configure/opt" },
           ],
         },
       ],
