@@ -57,6 +57,9 @@ CICD
 * tree-shaking也是利用ast进行静态分析
 * UglifyJS也是利用ast进行代码压缩
 * vite用的esbuild有个功能是将cjs转出esm,也是通过ast来实现的
+
+### tree-shaking
+基于静态分析，只适用于esm，因为esm是静态的，在编译时就可以确定导入导出，据此去除未使用的代码
 ### 举例
 ```js
 let a = 1

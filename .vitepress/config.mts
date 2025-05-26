@@ -301,7 +301,6 @@ export default defineConfig({
           items: [
             { text: "检查git commit内容", link: "/configure/project" },
             { text: "难点", link: "/configure/difficult" },
-            { text: "要点", link: "/configure/bagu" },
             { text: "工程化", link: "/configure/engine" },
             { text: "性能优化", link: "/configure/opt" },
           ],
