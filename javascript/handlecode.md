@@ -75,6 +75,25 @@ function myPromiseAllSettle(promises){
   })
 }
 ```
+## 控制并发,错误处理,重试
+```js
+async function limit(urls,max){
+  let res = []
+  let s = new Set()
+  for(let i = 0;i<urls.length;i++){
+    if(s.size===max){
+      await Promise.race(s)
+    }
+    const fn = query(urls[i]).then((data)=>{
+      res.push(data)
+      s.delete(fn)
+    })
+    s.add(fn)
+  }
+  await Promise.all(s)
+  return res
+}
+```
 ### 防抖和节流
 
 ```js
