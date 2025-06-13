@@ -93,7 +93,7 @@ export default defineConfig({
       },
       { text: "性能优化", link: "/optimization/image" },
       { text: "项目配置", link: "/configure/project" },
-      { text: "Node", link: "/node/initial" },
+      { text: "库", items: [{ text:'sass',link: "/packages/sass" }]  },
       {
         text: "构建工具",
         items: [
@@ -303,6 +303,7 @@ export default defineConfig({
             { text: "难点", link: "/configure/difficult" },
             { text: "工程化", link: "/configure/engine" },
             { text: "性能优化", link: "/configure/opt" },
+            { text: "组件库", link: "/configure/component" },
           ],
         },
       ],
