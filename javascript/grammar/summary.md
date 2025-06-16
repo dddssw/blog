@@ -65,6 +65,7 @@ console.log("5"); // 同步任务
 宏任务：`setTimeout`、`DOM 事件`、`I/O`、`requestAnimationFrame`
 
 微任务：`Promise回调`、`MutationObserver`
+
 7. ## 浏览器搜索url
 首先浏览器是一个多进程的架构，例如browser进程,每个页签都有一个render进程，最重要的主线程就在其中
 
