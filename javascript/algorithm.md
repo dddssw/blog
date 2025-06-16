@@ -126,36 +126,30 @@ var lowestCommonAncestor = function (root, p, q) {
 };
 ```
 
-### 路径总和|||
+### 路径总和3
 
 这个思路都是一样的，记录总数以及个数在 map 里，这个 map 初始数组 new Map([[0,1]])。再声明一个总和 sum
 
 它不需要依赖子问题的答案，因为已经记录在 map 里，然后类似于回溯吧，递归完还原 map 和 sum
-```js{10,11,20,21}
+```js{9,10,11,14,15}
 var pathSum = function (root, targetSum) {
-    let m = new Map([[0, 1]])
-    let sum = 0
-    let max = 0
-    function dfs(node) {
-        if (!node) {
-            return
-        }
-        //注意这块的顺序
-        sum += node.val
-        max += (m.get(sum - targetSum) || 0)
-        if (m.has(sum)) {
-            m.set(sum, m.get(sum) + 1)
-        } else {
-            m.set(sum, 1)
-        }
-        dfs(node.left)
-        dfs(node.right)
-        //注意这块的顺序
-        m.set(sum, m.get(sum) - 1)
-        sum -= node.val
+  let m = new Map([[0, 1]]);
+  let sum = 0;
+  let count = 0
+  function dfs(node) {
+    if (!node) {
+      return;
     }
-    dfs(root)
-    return max
+    sum += node.val;
+    count+=(m.get(sum-targetSum)||0)
+    m.set(sum, (m.get(sum) || 0) + 1);//get不是has
+    dfs(node.left);
+    dfs(node.right);
+    m.set(sum, m.get(sum) - 1);//get不是has
+    sum -= node.val;
+  }
+  dfs(root)
+  return count
 };
 ```
 ### 从前序，中序构造二叉树
