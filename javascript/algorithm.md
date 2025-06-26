@@ -140,6 +140,7 @@ var lowestCommonAncestor = function (root, p, q) {
 
 这个思路都是一样的，记录总数以及个数在 map 里，这个 map 初始数组 new Map([[0,1]])。再声明一个总和 sum
 
+
 它不需要依赖子问题的答案，因为已经记录在 map 里，然后类似于回溯吧，递归完还原 map 和 sum
 ```js{9,10,11,14,15}
 var pathSum = function (root, targetSum) {
@@ -151,11 +152,11 @@ var pathSum = function (root, targetSum) {
       return;
     }
     sum += node.val;
-    count+=(m.get(sum-targetSum)||0)
-    m.set(sum, (m.get(sum) || 0) + 1);//get不是has
+    count+=(m.get(sum-targetSum)||0)//count在sum之后处理,不是在下面之后处理
+    m.set(sum, (m.get(sum) || 0) + 1);
     dfs(node.left);
     dfs(node.right);
-    m.set(sum, m.get(sum) - 1);//get不是has
+    m.set(sum, m.get(sum) - 1);
     sum -= node.val;
   }
   dfs(root)
