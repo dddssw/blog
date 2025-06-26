@@ -2,8 +2,6 @@
 outline: deep
 ---
 
-不要紧张，不要紧张，不要紧张
-
 反之时间快就要用空间来换，这是互补的。解不出试着创建辅助的变量
 
 ## 递归
@@ -18,12 +16,24 @@ outline: deep
 
 参数的话可以考虑不仅仅一个 node，或者两个 node，或者一个 node,一个其他的什么数据
 
-::: tip 悟了
+::: tip 
 如果输入的问题本来就是一个大问题，只需要一个 dfs
 
 如果是需要接受一些别的参数，而不是仅仅是大问题，需要辅助函数 dfs
 :::
+```js
+//依赖子问题的结果
+function dfs(node){
+if(!node){
+    return false
+}
+let left = dfs(node.left)
+let right = dfs(node.right)
 
+return left || right;
+    }
+
+```
 ### 二叉树
 
 层序遍历（需要一个队列，一个方向出栈，另一个方向入栈）,要对空树做一个额外的判断
