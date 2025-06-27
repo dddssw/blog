@@ -459,3 +459,24 @@ color: getCssVar('color', 'primary')
 }
 ```
 :::
+
+
+### 遵守BEM命名规则生成组件类名
+1. 生成块的类名
+::: code-group
+```scss [mixin/mixins.scss]
+@mixin b($block) {
+  $B: $namespace + $common-separator + $block !global;
+
+  .#{$B} {
+    @content;
+  }
+}
+```
+``` scss [use]
+@include b(alert) {
+  @include set-component-css-var('alert', $alert);
+  //...样式
+}
+```
+:::

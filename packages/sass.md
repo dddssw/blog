@@ -73,64 +73,17 @@ body {
 }
 ```
 ## mixin
-重用一组样式,当然不仅可以包含属性，也可以包含css规则，包含选择器和选择器中的属性
-```css
-@mixin no-bullets {
-  list-style: none;
-  li {
-    list-style-image: none;
-    list-style-type: none;
-    margin-left: 0px;
-  }
-}
+使用 `@mixin` 定义, 使用方式 `@mixin <name> { ... }` or `@mixin name(<arguments...>) { ... }`
 
-ul.plain {
-  color: #444;
-  @include no-bullets;
-}
+使用上 `@include <name>` or `@include <name>(<arguments...>)`
 
--->
+接收的参数不仅可以当成 `value` 使用也可以使用插值充当 `key`
 
-ul.plain {
-  color: #444;
-  list-style: none;
-}
-ul.plain li {
-  list-style-image: none;
-  list-style-type: none;
-  margin-left: 0px;
-}
-```
-`@include` 指令会将引入mixin的那行代码替换成mixin里边的内容
+也允许默认值 `@mixin replace-text($image, $x: 50%, $y: 50%)`
 
-### 给mixin进行传参
-```css
-@mixin link-colors($normal, $hover, $visited) {
-  color: $normal;
-  &:hover { color: $hover; }
-  &:visited { color: $visited; }
-}
+传递参数时可以按顺序传递也可以按名称传递,语法与默认参数是一致的 `@include square(100px, $radius: 4px);`
 
-a {
-  @include link-colors(blue, red, green);
-}
-
-//Sass最终生成的是：
-
-a { color: blue; }
-a:hover { color: red; }
-a:visited { color: green; }
-```
-也可以这样传参,不需要考虑顺序
-```css
-a {
-    @include link-colors(
-      $normal: blue,
-      $visited: green,
-      $hover: red
-  );
-}
-```
+除了接受参数之外，mixin 还可以接受一整块样式，即内容块。mixin 可以通过在其主体中包含 `@content` 规则来声明它接受的内容块
 ## @extend
 @extend 允许你将一个选择器的 CSS 属性​​共享​​给另一个选择器，避免重复代码
 
