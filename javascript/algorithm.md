@@ -1178,3 +1178,30 @@ var search = function (nums, target) {
 };
 ```
 ## 快速排序
+```js
+function sort(arr) {
+  function dfs(left, right) {
+    if (left >= right) {
+      return;
+    }
+    let i = left;
+    let j = right;
+    let tar = arr[left];
+    while (left < right) {
+      while (left < right && arr[right] >= tar) {
+        right--;
+      }
+      while (left < right && arr[left] <= tar) {
+        left++;
+      }
+      [arr[left], arr[right]] = [arr[right], arr[left]];
+    }
+    [arr[left], arr[i]] = [arr[i], arr[left]];
+    dfs(i, left - 1);
+    dfs(left + 1, j);
+  }
+  dfs(0, arr.length - 1);
+  return arr;
+}
+console.log(sort([9, 7, 5, 3, 1]));
+```
