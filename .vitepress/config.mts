@@ -98,7 +98,7 @@ export default defineConfig({
         text: "构建工具",
         items: [
           { text: "Vite", link: "bundle/vite/initial" },
-          { text: "Webpack", link: "/bundle/webpack/treeShaking" },
+          { text: "Webpack", link: "/bundle/webpack/webpack" },
         ],
       },
     ],
@@ -377,6 +377,10 @@ export default defineConfig({
         {
           text: "webpack",
           items: [
+            {
+              text: "webpack",
+              link: "/bundle/webpack/webpack",
+            },
             {
               text: "树摇",
               link: "/bundle/webpack/treeShaking",
