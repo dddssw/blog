@@ -1128,3 +1128,80 @@ var findDuplicate = function (nums) {
 // o(n)
 // o(1)
 ```
+
+## 二分查找
+### [搜索插入位置](https://leetcode.cn/problems/search-insert-position/description/?envType=study-plan-v2&envId=top-100-liked)
+```js
+var searchInsert = function (nums, target) {
+  let left = 0;
+  let right = nums.length - 1;
+  while (left <= right) {
+    let mid = Math.floor((left + right) / 2);
+    if (nums[mid] === target) {
+      return mid;
+    }
+    if (target < nums[mid]) {
+      right = mid - 1;
+    } else {
+      left = mid + 1;
+    }
+  }
+  return left;
+};
+```
+### [搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/description/)
+每次二分后，子数组 [left, mid] 或 [mid, right] ​​至少有一个是有序的
+```js
+var search = function (nums, target) {
+  let left = 0;
+  let right = nums.length - 1;
+  while (left <= right) {//子数组长度为 1
+    let mid = Math.floor((left + right) / 2);
+    if (nums[mid] === target) {
+      return mid;
+    }
+    if (nums[left] <= nums[mid]) {//不加=会以为右边是有序的
+      if (target >= nums[left] && target <= nums[mid]) {
+        right = mid - 1;
+      } else {
+        left = mid + 1;
+      }
+    } else {
+      if (target >= nums[mid] && target <= nums[right]) {
+        left = mid + 1;
+      } else {
+        right = mid - 1;
+      }
+    }
+  }
+  return -1;
+};
+```
+## 快速排序
+```js
+function sort(arr) {
+  function dfs(left, right) {
+    if (left >= right) {
+      return;
+    }
+    let i = left;
+    let j = right;
+    let tar = arr[left];
+    while (left < right) {
+      while (left < right && arr[right] >= tar) {
+        right--;
+      }
+      while (left < right && arr[left] <= tar) {
+        left++;
+      }
+      [arr[left], arr[right]] = [arr[right], arr[left]];
+    }
+    [arr[left], arr[i]] = [arr[i], arr[left]];
+    dfs(i, left - 1);
+    dfs(left + 1, j);
+  }
+  dfs(0, arr.length - 1);
+  return arr;
+}
+console.log(sort([9, 7, 5, 3, 1]));
+```

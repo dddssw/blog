@@ -5,9 +5,12 @@ layout: doc
 
 1. [闭包](closure)
 2. 原型  
-   对象有一个特殊的隐藏属性 prototype,它要么为 null,要么就是另一个对象的引用,该对象被称为原型",  
+   对象有一个特殊的隐藏属性 [[prototype]],它要么为 null,要么就是另一个对象的引用,该对象被称为原型",  
    属性 [[Prototype]] 是内部的而且是隐藏的,但是使用特殊的名字 **proto** 可以设置它,  
    当访问一个对象的属性,如果没找到就会到原型里找,原型里又有它的原型,这样一直寻找,就是一条原型链,原型链的终点是 null,
+   F.prototype 指的是 F 的一个名为 "prototype" 的常规属性。这听起来与“原型”这个术语很类似，但这里我们实际上指的是具有该名字的常规属性。设置 Rabbit.prototype = animal 的字面意思是：“当创建了一个 new Rabbit 时，把它的 [[Prototype]] 赋值为 animal,被他实例化出的对象就可以使用animal上的方法。构造函数-prototype,对象-__proto__
+
+   对于一个构造函数，prototype是一个常规属性，例如Array.prototype他是一个包含了一组数组方法的对象，这个对象的原型(__proto__)是Object.prototype
 3. 迭代器
    for...of 只能遍历可迭代对象，如果遍历对象,  
    需要实现一个 Symbol.iterator 方法,  
@@ -122,3 +125,5 @@ let d = {
 c.a().fn();
 d.a().fn();
 ```
+7. promise打印
+执行代码，遇到同步任务执行，如果有微任务，宏任务加入队列。执行后面可以执行的同步代码。同步代码处理完，开始处理微任务，最后是宏任务。
