@@ -116,7 +116,189 @@ export const withInstall = <T, E extends Record<string, any>>(
 
 另一个负责导入流行库的api
 
-## css
+## sass制定组件库全局变量
+像主题色,组件尺寸,文字大小等组件库的全局样式属性规范,使用 `sass` 以变量的形式生成这些属性
+
+拿主题色举例,`map` 使用小括号分隔的
+:::code-group
+```scss [common/var.scss] 基础主题色
+// Color
+$colors: () !default;
+$colors: map.deep-merge(
+  (
+    'white': #ffffff,
+    'black': #000000,
+    'primary': (
+      'base': #409eff,
+    ),
+    'success': (
+      'base': #67c23a,
+    ),
+    'warning': (
+      'base': #e6a23c,
+    ),
+    'danger': (
+      'base': #f56c6c,
+    ),
+    'error': (
+      'base': #f56c6c,
+    ),
+    'info': (
+      'base': #909399,
+    ),
+  ),
+  $colors
+);
+//色调
+$color-white: map.get($colors, 'white') !default;
+$color-black: map.get($colors, 'black') !default;
+$color-primary: map.get($colors, 'primary', 'base') !default;
+$color-success: map.get($colors, 'success', 'base') !default;
+$color-warning: map.get($colors, 'warning', 'base') !default;
+$color-danger: map.get($colors, 'danger', 'base') !default;
+$color-error: map.get($colors, 'error', 'base') !default;
+$color-info: map.get($colors, 'info', 'base') !default;
+```
+```scss [common/var.scss] 层次主题色
+//通过deep-merge合并到$colors
+// types
+$types: primary, success, warning, danger, error, info;
+@mixin set-color-mix-level(
+  $type,
+  $number,
+  $mode: 'light',
+  $mix-color: $color-white
+) {
+  $colors: map.deep-merge(
+    (
+      $type: (
+        '#{$mode}-#{$number}':
+          color.mix(
+            $mix-color,
+            map.get($colors, $type, 'base'),
+            math.percentage(math.div($number, 10))
+          ),
+      ),
+    ),
+    $colors
+  ) !global;
+}
+
+//使用mixin
+@each $type in $types {
+  @for $i from 1 through 9 {
+    @include set-color-mix-level($type, $i, 'light', $color-white);
+  }
+}
+
+// --el-color-primary-dark-2
+@each $type in $types {
+  @include set-color-mix-level($type, 2, 'dark', $color-black);
+}
+```
+```css [生成的结果]
+'primary': (
+  'base': #409eff,
+  'light-1': #53a8ff,  // 主色混合 10% 白色
+  'light-2': #66b1ff,  // 混合 20% 白色
+  ...
+  'light-9': #ecf5ff   // 混合 90% 白色
+)
+```
+:::
+
+### 将变量挂载到root上
+这样变成了css变量,相当于全局都可以使用
+
+`set-css-var-value​` ​：用于生成原子级 CSS 变量（如颜色、单数值）  
+​`​set-component-css-var​` ​：用于将结构化 Map 变量批量转换为 CSS 变量，实现组件样式的集中管理
+:::code-group
+```scss [var.scss]
+:root {
+  // --el-color-#{$type}
+  // --el-color-#{$type}-light-{$i}
+  @each $type in (primary, success, warning, danger, error, info) {
+    @include set-css-color-type($colors, $type);//mixins/_var.scss
+  }
+}
+```
+```scss [mixins/_var.scss]
+@mixin set-css-color-type($colors, $type) {
+  @include set-css-var-value(('color', $type), map.get($colors, $type, 'base'));
+
+  @each $i in (3, 5, 7, 8, 9) {
+    @include set-css-var-value(
+      ('color', $type, 'light', $i),
+      map.get($colors, $type, 'light-#{$i}')
+    );
+  }
+
+  @include set-css-var-value(
+    ('color', $type, 'dark-2'),
+    map.get($colors, $type, 'dark-2')
+  );
+}
+// for example:
+// @include set-css-var-value(('color', 'primary'), red);
+// --el-color-primary: red;
+@mixin set-css-var-value($name, $value) {
+  #{joinVarName($name)}: #{$value};//function.scss
+}
+```
+```scss [function.scss]
+@function joinVarName($list) {
+  $name: '--' + config.$namespace;//组件库的前缀
+  @each $item in $list {
+    @if $item != '' {
+      $name: $name + '-' + $item;
+    }
+  }
+  @return $name;
+}
+```
+:::
+
+::: code-group
+```scss [var.scss]
+:root{
+  @include set-component-css-var('font-size', $font-size);
+}
+```
+```scss [mixins/_var.scss]
+// set all css var for component by map
+@mixin set-component-css-var($name, $variables) {
+  @each $attribute, $value in $variables {
+    @if $attribute == 'default' {
+      #{getCssVarName($name)}: #{$value};
+    } @else {
+      #{getCssVarName($name, $attribute)}: #{$value};
+    }
+  }
+}
+```
+```scss [function.scss]
+// getCssVarName('button', 'text-color') => '--el-button-text-color'
+@function getCssVarName($args...) {
+  @return joinVarName($args);
+}
+```
+:::
+
+使用
+:::code-group
+```scss [mixins/function.scss]
+// getCssVar('button', 'text-color') => var(--el-button-text-color)
+@function getCssVar($args...) {
+  @return var(#{joinVarName($args)});
+}
+```
+``` scss
+padding: getCssVar('alert', 'padding');
+```
+:::
+将ui库全局变量赋值给组件的私有变量,例如button组件里生成了私有的css变量
+
+### BEM
 使用的是BEM命名规则,组件用-连接,元素用__连接,类型用--连接,状态用is-xx表示
 
 编写组件时,如果都是手写类名,写法繁琐,可以把BEM命名规则封装风函数,动态生成类名
@@ -245,211 +427,69 @@ const ns = useNamespace('affix')
 <div ref="root" :class="ns.b()" :style="rootStyle"></div>
 ```
 
-### :root
-:root 主要用于​​定义全局 CSS 变量,通过var读取全局属性
-```css
-:root {
-  --ep-c-bg-row: #f9fafc;
-}
-.row-bg {
-  padding: 10px 0;
-  background-color: var(--ep-c-bg-row);
-}
-```
-## 组件库 sass
-### 主题色
-```sass
-$colors: () !default;
-$colors: map.deep-merge(
-  (
-    'white': #ffffff,
-    'black': #000000,
-    'primary': (
-      'base': #409eff,
-    ),
-    'success': (
-      'base': #67c23a,
-    ),
-    'warning': (
-      'base': #e6a23c,
-    ),
-    'danger': (
-      'base': #f56c6c,
-    ),
-    'error': (
-      'base': #f56c6c,
-    ),
-    'info': (
-      'base': #909399,
-    ),
-  ),
-  $colors
-);
-```
-### 主题色层次
-也就是主题色的10%到90%的变化, 使用 `mix` 来混合颜色
-```scss
-@mixin set-color-mix-level(
-  $type,
-  $number,
-  $mode: 'light',
-  $mix-color: $color-white
-) {
-  $colors: map.deep-merge(
-    (
-      $type: (
-        '#{$mode}-#{$number}':
-          color.mix(
-            $mix-color,
-            map.get($colors, $type, 'base'),
-            math.percentage(math.div($number, 10))
-          ),
-      ),
-    ),
-    $colors
-  ) !global;
-}
 
-@each $type in $types {
-  @for $i from 1 through 9 {
-    @include set-color-mix-level($type, $i, 'light', $color-white);
+
+
+### 遵守BEM命名规则生成组件类名
+1. 生成块的类名
+::: code-group
+```scss [mixin/mixins.scss]
+// BEM
+@mixin b($block) {
+  $B: $namespace + $common-separator + $block !global;
+
+  .#{$B} {
+    @content;
   }
 }
 
-// --el-color-primary-dark-2,暗黑模式
-@each $type in $types {
-  @include set-color-mix-level($type, 2, 'dark', $color-black);
-}
-```
-### :root伪类
-通过这个伪类中自定义全局的 `css` 变量,一般以 `--` 开头, 可以确保他们在整个文档中全局可用
-```scss
-:root {
-    --a:#fff
-}
-background-color:var(--a)
-```
-### 利用 sass 生成 :root 变量
-定义前缀,块,修改器变量,因为是BEM规范
-```scss
-$namespace: 'el' !default;
-$common-separator: '-' !default;
-$element-separator: '__' !default;
-$modifier-separator: '--' !default;
-$state-prefix: 'is-' !default;
-```
-将色彩映射到root选择器中
-
-:::code-group
-```var.scss
-@use 'mixins/var' as *;
-@use '../common/var' as *;
-
-:root {
-    color-scheme: light;
-  
-    // --el-color-#{$type}
-    // --el-color-#{$type}-light-{$i}
-    @each $type in (primary, success, warning, danger, error, info) {
-      @include set-css-color-type($colors, $type);//$colors是一个map
-    }
-}
-```
-```mixins/_var.scss
-@use 'function' as *;
-
-@mixin set-css-color-type($colors, $type) {
-    @include set-css-var-value(('color', $type), map.get($colors, $type, 'base'));
-  
-    @each $i in (3, 5, 7, 8, 9) {
-      @include set-css-var-value(
-        ('color', $type, 'light', $i),
-        map.get($colors, $type, 'light-#{$i}')
-      );
-    }
-  
-    @include set-css-var-value(
-      ('color', $type, 'dark-2'),
-      map.get($colors, $type, 'dark-2')
-    );
+@mixin e($element) {
+  $E: $element !global;
+  $selector: &;
+  $currentSelector: '';
+  @each $unit in $element {
+    $currentSelector: #{$currentSelector +
+      '.' +
+      $B +
+      $element-separator +
+      $unit +
+      ','};
   }
 
-// set css var value, because we need translate value to string
-// for example:
-// @include set-css-var-value(('color', 'primary'), red);
-// --el-color-primary: red;
-@mixin set-css-var-value($name, $value) {
-    #{joinVarName($name)}: #{$value};
-  }
-```
-```mixins/function.scss
-// join var name
-// joinVarName(('button', 'text-color')) => '--el-button-text-color'
-@function joinVarName($list) {
-    $name: '--' + config.$namespace;
-    @each $item in $list {
-      @if $item != '' {
-        $name: $name + '-' + $item;
+  @if hitAllSpecialNestRule($selector) {
+    @at-root {
+      #{$selector} {
+        #{$currentSelector} {
+          @content;
+        }
       }
     }
-    @return $name;
-  }
-```
-:::
-
-### 使用root里的变量名词
-:::code-group
-```mixins/function.scss
-// getCssVar('button', 'text-color') => var(--el-button-text-color)
-@function getCssVar($args...) {
-  @return var(#{joinVarName($args)});
-}
-```
-```example
-color: getCssVar('color', 'primary')
-```
-:::
-
-对于组件库的样式,可以通过class或者style来修改.比如el-row的justify属性,他会声明不同的样式
-:::code-group
-```row.scss
-@use 'common/var' as *;
-@use 'mixins/mixins' as *;
-@use 'mixins/utils' as *;
-
-@include b(row) {
-  display: flex;
-  flex-wrap: wrap;
-  position: relative;
-  box-sizing: border-box;
-
-  @include when(justify-center) {
-    justify-content: center;
-  }
-  @include when(justify-end) {
-    justify-content: flex-end;
-  }
-  @include when(justify-space-between) {
-    justify-content: space-between;
-  }
-  @include when(justify-space-around) {
-    justify-content: space-around;
-  }
-  @include when(justify-space-evenly) {
-    justify-content: space-evenly;
-  }
-  @include when(align-top) {
-    align-items: flex-start;
-  }
-  @include when(align-middle) {
-    align-items: center;
-  }
-  @include when(align-bottom) {
-    align-items: flex-end;
+  } @else {
+    @at-root {
+      #{$currentSelector} {
+        @content;
+      }
+    }
   }
 }
-```
-```mixin.scss
+
+@mixin m($modifier) {
+  $selector: &;
+  $currentSelector: '';
+  @each $unit in $modifier {
+    $currentSelector: #{$currentSelector +
+      $selector +
+      $modifier-separator +
+      $unit +
+      ','};
+  }
+
+  @at-root {
+    #{$currentSelector} {
+      @content;
+    }
+  }
+}
 @mixin when($state) {
   @at-root {
     &.#{$state-prefix + $state} {
@@ -458,25 +498,121 @@ color: getCssVar('color', 'primary')
   }
 }
 ```
-:::
-
-
-### 遵守BEM命名规则生成组件类名
-1. 生成块的类名
-::: code-group
-```scss [mixin/mixins.scss]
-@mixin b($block) {
-  $B: $namespace + $common-separator + $block !global;
-
-  .#{$B} {
-    @content;
-  }
-}
-```
 ``` scss [use]
+@use 'mixins/mixins' as *;
+@use 'mixins/var' as *;
+@use 'common/var' as *;
+
 @include b(alert) {
   @include set-component-css-var('alert', $alert);
-  //...样式
+
+  width: 100%;
+  padding: getCssVar('alert', 'padding');
+  margin: 0;
+  box-sizing: border-box;
+  border-radius: getCssVar('alert', 'border-radius-base');
+  position: relative;
+  background-color: getCssVar('color', 'white');
+  overflow: hidden;
+  opacity: 1;
+  display: flex;
+  align-items: center;
+  transition: opacity getCssVar('transition-duration', 'fast');
+
+  @include when(light) {
+    .#{$namespace}-alert__close-btn {
+      color: getCssVar('text-color', 'placeholder');
+    }
+  }
+
+  @include when(dark) {
+    .#{$namespace}-alert__close-btn {
+      color: getCssVar('color', 'white');
+    }
+    .#{$namespace}-alert__description {
+      color: getCssVar('color', 'white');
+    }
+  }
+
+  @include when(center) {
+    justify-content: center;
+  }
+
+  @each $type in (success, info, warning, error) {
+    @include m($type) {
+      @include css-var-from-global(
+        ('alert', 'bg-color'),
+        ('color', $type, 'light-9')
+      );
+
+      &.is-light {
+        background-color: getCssVar('alert', 'bg-color');
+        color: getCssVar('color', $type);
+
+        .#{$namespace}-alert__description {
+          color: getCssVar('color', $type);
+        }
+      }
+
+      &.is-dark {
+        background-color: getCssVar('color', $type);
+        color: getCssVar('color', 'white');
+      }
+    }
+  }
+
+  @include e(content) {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  & .#{$namespace}-alert__icon {
+    font-size: getCssVar('alert', 'icon-size');
+    width: getCssVar('alert', 'icon-size');
+    margin-right: 8px;
+
+    @include when(big) {
+      font-size: getCssVar('alert', 'icon-large-size');
+      width: getCssVar('alert', 'icon-large-size');
+      margin-right: 12px;
+    }
+  }
+
+  @include e(title) {
+    font-size: getCssVar('alert', 'title-font-size');
+    line-height: 24px;
+
+    &.with-description {
+      font-size: getCssVar('alert', 'title-with-description-font-size');
+    }
+  }
+
+  & .#{$namespace}-alert__description {
+    font-size: getCssVar('alert', 'description-font-size');
+    margin: 0;
+  }
+
+  & .#{$namespace}-alert__close-btn {
+    font-size: getCssVar('alert', 'close-font-size');
+    opacity: 1;
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    cursor: pointer;
+
+    @include when(customed) {
+      font-style: normal;
+      font-size: getCssVar('alert', 'close-customed-font-size');
+      line-height: 24px;
+      top: 8px;
+    }
+  }
+}
+
+.#{$namespace}-alert-fade-enter-from,
+.#{$namespace}-alert-fade-leave-active {
+  opacity: 0;
 }
 ```
 :::
