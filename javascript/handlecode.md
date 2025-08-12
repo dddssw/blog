@@ -12,7 +12,7 @@ outline: deep
 - 所有数据 resolve 之后返回结果
 
 ```js
-function myPromiseAll(promises) {
+async function myPromiseAll(promises) {
   return new Promise((resolve, reject) => {
     // 1. 参数校验
     if (typeof promises?.[Symbol.iterator] !== "function") {
