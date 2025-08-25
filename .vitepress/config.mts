@@ -68,6 +68,7 @@ export default defineConfig({
         items: [
           { text: "grammar", link: "/javascript/grammar/introduction" },
           { text: "application", link: "/javascript/application/firstFrame" },
+          { text: "Web api", link: "/javascript/Web-Api/ResizeObserver" },
           { text: "算法", link: "/javascript/algorithm" },
           { text: "手写题", link: "/javascript/handlecode" },
         ],
@@ -80,7 +81,7 @@ export default defineConfig({
           { text: "React", link: "/frame/react/start" },
         ],
       },
-      { text: "Web-Api", link: "/Web-Api/ResizeObserver" },
+      // { text: "Web-Api", link: "/Web-Api/ResizeObserver" },
       { text: "pnpm", link: "/pnpm/overview" },
       { text: "vscode", link: "/vscode/extension" },
       {
@@ -209,6 +210,34 @@ export default defineConfig({
           link: "/javascript/algorithm",
         },
       ],
+      "/javascript/Web-Api": [
+        { text: "ResizeObserver", link: "/javascript/Web-Api/ResizeObserver" },
+        { text: "XMLHttpRequest", link: "/javascript/Web-Api/XMLHttpRequest" },
+        { text: "Web Storage API", link: "/javascript/Web-Api/StorageAPI" },
+        { text: "高亮API", link: "/javascript/Web-Api/Highlight" },
+        { text: "同源通信", link: "/javascript/Web-Api/sameOrigin" },
+        { text: "CSS 对象模型（CSSOM）", link: "/javascript/Web-Api/cssom" },
+        { text: "File API", link: "/javascript/Web-Api/file" },
+        { text: "Canvas", link: "/javascript/Web-Api/canvas" },
+        { text: "拖拽API", link: "/javascript/Web-Api/dragAnddrop" },
+        { text: "History API", link: "/javascript/Web-Api/history" },
+        {
+          text: "Intersection Observer API",
+          link: "/Web-Api/intersection",
+        },
+        {
+          text: "web work",
+          link: "/Web-Api/webWork",
+        },
+        {
+          text: "webAssembly",
+          link: "/Web-Api/webAssembly",
+        },
+        {
+          text: "service work",
+          link: "/Web-Api/serviceWork",
+        },
+      ],
       "/rust/": [
         {
           text: "开始",
@@ -261,40 +290,40 @@ export default defineConfig({
           link: "/frame/vue/apis",
         },
       ],
-      "/Web-Api/": [
-        {
-          text: "Web-Api",
-          // collapsed: true,
-          items: [
-            { text: "ResizeObserver", link: "/Web-Api/ResizeObserver" },
-            { text: "XMLHttpRequest", link: "/Web-Api/XMLHttpRequest" },
-            { text: "Web Storage API", link: "/Web-Api/StorageAPI" },
-            { text: "高亮API", link: "/Web-Api/Highlight" },
-            { text: "同源通信", link: "/Web-Api/sameOrigin" },
-            { text: "CSS 对象模型（CSSOM）", link: "/Web-Api/cssom" },
-            { text: "File API", link: "/Web-Api/file" },
-            { text: "Canvas", link: "/Web-Api/canvas" },
-            { text: "拖拽API", link: "/Web-Api/dragAnddrop" },
-            { text: "History API", link: "/Web-Api/history" },
-            {
-              text: "Intersection Observer API",
-              link: "/Web-Api/intersection",
-            },
-            {
-              text: "web work",
-              link: "/Web-Api/webWork",
-            },
-            {
-              text: "webAssembly",
-              link: "/Web-Api/webAssembly",
-            },
-            {
-              text: "service work",
-              link: "/Web-Api/serviceWork",
-            },
-          ],
-        },
-      ],
+      // "/Web-Api/": [
+      //   {
+      //     text: "Web-Api",
+      //     // collapsed: true,
+      //     items: [
+      //       { text: "ResizeObserver", link: "/Web-Api/ResizeObserver" },
+      //       { text: "XMLHttpRequest", link: "/Web-Api/XMLHttpRequest" },
+      //       { text: "Web Storage API", link: "/Web-Api/StorageAPI" },
+      //       { text: "高亮API", link: "/Web-Api/Highlight" },
+      //       { text: "同源通信", link: "/Web-Api/sameOrigin" },
+      //       { text: "CSS 对象模型（CSSOM）", link: "/Web-Api/cssom" },
+      //       { text: "File API", link: "/Web-Api/file" },
+      //       { text: "Canvas", link: "/Web-Api/canvas" },
+      //       { text: "拖拽API", link: "/Web-Api/dragAnddrop" },
+      //       { text: "History API", link: "/Web-Api/history" },
+      //       {
+      //         text: "Intersection Observer API",
+      //         link: "/Web-Api/intersection",
+      //       },
+      //       {
+      //         text: "web work",
+      //         link: "/Web-Api/webWork",
+      //       },
+      //       {
+      //         text: "webAssembly",
+      //         link: "/Web-Api/webAssembly",
+      //       },
+      //       {
+      //         text: "service work",
+      //         link: "/Web-Api/serviceWork",
+      //       },
+      //     ],
+      //   },
+      // ],
       "/configure/": [
         {
           text: "项目配置",
